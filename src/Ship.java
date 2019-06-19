@@ -1,6 +1,4 @@
-import javafx.application.Application;
 import javafx.scene.shape.Rectangle;
-import javafx.stage.Stage;
 
 public class Ship {
     private Rectangle body;
@@ -9,4 +7,7 @@ public class Ship {
     private String direction;
 
 
+    public Position getPosition() {
+        return position;
+    }
 }
