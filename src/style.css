@@ -1,0 +1,9 @@
+.region {
+    -fx-pref-width: 50;
+    -fx-pref-height: 50;
+    -fx-background-image: url("/images/water.png");
+    -fx-background-size: 50 50;
+    -fx-background-position: center center;
+    -fx-border: solid;
+    -fx-border-width: 2;
+}
