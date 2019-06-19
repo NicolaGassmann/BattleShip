@@ -7,4 +7,11 @@
     -fx-border: solid;
     -fx-border-width: 1;
     -fx-border-color: black;
+
+}
+
+.start_background{
+    -fx-background-image: url("img/start_screen.jpg");
+    -fx-background-width: 800;
+    -fx-background-height: 800;
 }
