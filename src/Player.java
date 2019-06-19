@@ -2,7 +2,6 @@ import javafx.beans.property.SimpleListProperty;
 
 public class Player {
 
-    private int fielSize;
     private SimpleListProperty ownShots;
     private SimpleListProperty enemyShots;
     Position position = new Position();
