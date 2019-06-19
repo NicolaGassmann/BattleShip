@@ -17,13 +17,21 @@ public class Main extends Application {
         GridPane battlefield = new GridPane();
         Group root = new Group();
         root.getChildren().add(battlefield);
-        Scene scene = new Scene(root, 600, 600);
+        Scene scene = new Scene(root, 800, 600);
+
         int x = 0;
         int y = 0;
         for(int i = 0; i < 100; i++){
             Region region = new Region();
             region.getStyleClass().add("region");
             battlefield.add(region, x, y);
+            System.out.println("y = " + y);
+            System.out.println("x = " + x);
+            x++;
+            if(x > 9){
+                x = 0;
+                y++;
+            }
         }
         scene.getStylesheets().add(getClass().getResource("style.css").toExternalForm());
         stage.setScene(scene);
