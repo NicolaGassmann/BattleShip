@@ -6,6 +6,9 @@ public class Ship {
     private int length;
     private String direction;
 
+    public Ship(){
+
+    }
 
     public Position getPosition() {
         return position;
