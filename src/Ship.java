@@ -10,7 +10,7 @@ public class Ship {
 
     public Ship(int length, Paint fill) {
         this.length = length;
-        body = new Rectangle(length * 50, 50, fill);
+        body = new Rectangle(length * 51, 50, fill);
         this.direction = "horizontal";
     }
 
