@@ -14,9 +14,7 @@ public class Main extends Application {
         Game game = new Game();
         Scene startScreen = game.getStartScreen("style.css", stage);
 
-        Scene battlefield = game.getBattlefield();
-
-        stage.setScene(battlefield);
+        stage.setScene(startScreen);
         stage.show();
     }
 }
