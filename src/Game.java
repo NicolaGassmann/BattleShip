@@ -2,9 +2,11 @@ import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
@@ -44,7 +46,7 @@ public class Game {
         Group root = new Group();
         root.getChildren().add(battlefield);
         root.getChildren().add(submarine.getShip());
-        Scene scene = new Scene(root, 800, 600, SKYBLUE);
+        Scene scene = new Scene(root, 800, 600, new ImagePattern(new Image("img/water.jpg")));
 
         scene.getStylesheets().add(getClass().getResource("style.css").toExternalForm());
 
@@ -59,7 +61,7 @@ public class Game {
 
             region.setOnMouseEntered(mouse -> {
                 submarine.moveShip(region.getX(), region.getY());
-                region.setFill(GREEN);
+                region.setFill(rgb(0,0,200,0.5));
             });
             region.setOnMouseExited(event -> {
                 region.setFill(rgb(0, 0, 0, 0));
