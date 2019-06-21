@@ -15,21 +15,41 @@ public class Ship {
     }
 
     public void moveShip(double x, double y) {
-        getShip().setX(x);
-        getShip().setY(y);
+        if(direction.equals("vertical") ){
+            getShip().setX(x-76.5);
+            getShip().setY(y-25.2);
+            if(getShip().getY() < 76.5){
+                getShip().setY(76.5);
+            }
+            if(getShip().getY() > 510-length*51+76.5){
+                getShip().setY(510-length*51+76.5);
+            }
+        }else {
+            getShip().setX(x-51);
+            getShip().setY(y+0.4);
+            if(getShip().getX() > 510-length*51){
+                getShip().setX(510-length*51);
+            }
+            if(getShip().getX() < 0){
+                getShip().setX(0);
+            }
+        }
     }
 
-    public void positionShip(Position position) {
-        this.position = position;
+    public void positionShip(int x, int y) {
+        position.setX(x);
+        position.setY(y);
     }
 
     public void changeDirection() {
         if (this.direction.equals("horizontal")) {
             this.direction = "vertical";
-        }
-        if (this.direction.equals("vertical")) {
+            getShip().setRotate(90);
+        }else if (this.direction.equals("vertical")) {
             this.direction = "horizontal";
+            getShip().setRotate(0);
         }
+
     }
 
     public Position getPosition() {
