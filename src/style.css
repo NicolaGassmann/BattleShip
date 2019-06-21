@@ -12,3 +12,8 @@
     -fx-background-repeat: no-repeat;
     -fx-background-size: cover, auto;
 }
+
+.battlefield Line {
+    -fx-stroke: BLACK;
+    -fx-stroke-width: 2;
+}

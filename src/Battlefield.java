@@ -22,9 +22,13 @@ public class Battlefield {
 
     public Scene getGameScreen() {
         Group root = new Group();
-        Scene scene = new Scene(root, 800, 600, new ImagePattern(new Image("img/water.jpg")));
+        Rectangle measure = new Rectangle(501, 10, RED);
+        root.getChildren().add(measure);
+
+        Scene scene = new Scene(root, 800, 600 /*,new ImagePattern(new Image("img/water.jpg"))*/);
         scene.getStylesheets().add(getClass().getResource("style.css").toExternalForm());
         getBattlefield(scene, root);
+        measure.toFront();
         return scene;
 
     }
@@ -52,12 +56,12 @@ public class Battlefield {
             Tile tile = new Tile(x, y);
             Rectangle region = tile.getTile();
             region.setFill(rgb(0, 0, 0, 0));
-            region.setStrokeWidth(1);
-            region.setStroke(BLACK);
+            battlefield.setGridLinesVisible(true);
+            battlefield.getStyleClass().add("battlefield");
 
             region.setOnMouseEntered(mouse -> {
-                double newX = tile.getX() * 51;
-                double newY = tile.getY() * 51;
+                double newX = tile.getX();
+                double newY = tile.getY();
                 selectedBoat.moveShip(newX, newY);
                 selectedBoat.getPosition();
             });
