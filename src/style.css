@@ -1,13 +1,4 @@
-.region {
-    -fx-fill: skyblue;
-    -fx-background-size: 50 50;
-    -fx-background-position: center center;
-    -fx-stroke: black;
-    -fx-stroke-width: 1;
-}
-.selected{
-    -fx-background-color: green;
-}
+
 
 .root{
     -fx-background-image: url("img/start_screen.jpg");

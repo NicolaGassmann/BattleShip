@@ -8,7 +8,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
-import static javafx.scene.paint.Color.BLUE;
+import static javafx.scene.paint.Color.*;
 
 public class Game {
 
@@ -20,7 +20,7 @@ public class Game {
         root.getStylesheets().add(getClass().getResource(styleSheet).toExternalForm());
 
         Button start = new Button("Start");
-        start.setOnAction(event->{stage.setScene(getBattlefield());});
+        start.setOnAction(event-> stage.setScene(getBattlefield()));
         Button settings = new Button("Einstellungen");
         Button quit = new Button("Beenden");
 
@@ -42,8 +42,9 @@ public class Game {
         GridPane battlefield = new GridPane();
         Ship submarine = new Ship(4, BLUE);
         Group root = new Group();
+        root.getChildren().add(battlefield);
         root.getChildren().add(submarine.getShip());
-        Scene scene = new Scene(root, 800, 600);
+        Scene scene = new Scene(root, 800, 600, SKYBLUE);
 
         scene.getStylesheets().add(getClass().getResource("style.css").toExternalForm());
 
@@ -52,15 +53,16 @@ public class Game {
         for (int i = 0; i < 100; i++) {
             Tile tile = new Tile();
             Rectangle region = tile.getTile();
-
-            region.getStyleClass().add("region");
+            region.setFill(rgb(0, 0, 0, 0));
+            region.setStrokeWidth(1);
+            region.setStroke(BLACK);
 
             region.setOnMouseEntered(mouse -> {
                 submarine.moveShip(region.getX(), region.getY());
-                region.getStyleClass().add("selected");
+                region.setFill(GREEN);
             });
             region.setOnMouseExited(event -> {
-                region.getStyleClass().remove("selected");
+                region.setFill(rgb(0, 0, 0, 0));
             });
             battlefield.add(region, x, y);
             System.out.println("y = " + region.getY());
