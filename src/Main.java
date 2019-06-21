@@ -11,12 +11,14 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) {
 
-        Game game = new Game();
-        Scene startScreen = game.getStartScreen("style.css", stage);
+        Startmenu startmenu = new Startmenu();
+        Battlefield battlefield = new Battlefield();
+        Scene startScreen = startmenu.getStartScreen("style.css", stage);
 
-        Scene battlefield = game.getBattlefield();
+        Scene gameScreen = battlefield.getGameScreen();
 
-        stage.setScene(battlefield);
+        stage.setScene(startScreen);
+        stage.setResizable(false);
         stage.show();
     }
 }

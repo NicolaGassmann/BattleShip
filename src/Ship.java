@@ -3,15 +3,17 @@ import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 
 public class Ship {
+    private String name;
     private Rectangle body;
     private String position;
     private int length;
     private String direction;
 
-    public Ship(int length, Paint fill) {
+    public Ship(String name,int length, Paint fill) {
         this.length = length;
         body = new Rectangle(length * 51, 50, fill);
         this.direction = "horizontal";
+        this.name = name;
     }
 
     public void moveShip(double x, double y) {
@@ -141,5 +143,13 @@ public class Ship {
 
     public int getLength() {
         return this.length;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }
