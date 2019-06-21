@@ -5,3 +5,10 @@
     -fx-background-repeat: no-repeat;
     -fx-background-size: cover, auto;
 }
+
+.controls {
+    -fx-background-image: url("img/metal.jpg");
+    -fx-background-position: left top, center;
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: cover, auto;
+}
