@@ -1,3 +1,5 @@
+import javafx.event.Event;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 
 public class Ship {
@@ -6,10 +8,15 @@ public class Ship {
     private int length;
     private String direction;
 
-    public Ship(int length){
+    public Ship(int length, Paint fill){
         this.length = length;
-        body = new Rectangle(length*50+2*length, 50);
+        body = new Rectangle(length*50, 50, fill);
         this.direction = "horizontal";
+    }
+
+    public void moveShip(double x, double y){
+        getShip().setX(x);
+        getShip().setY(y);
     }
 
     public void positionShip(Position position){

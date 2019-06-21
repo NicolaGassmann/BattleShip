@@ -1,13 +1,12 @@
 .region {
-    -fx-pref-width: 50;
-    -fx-pref-height: 50;
-    -fx-background-color: skyblue;
+    -fx-fill: skyblue;
     -fx-background-size: 50 50;
     -fx-background-position: center center;
-    -fx-border: solid;
-    -fx-border-width: 1;
-    -fx-border-color: black;
-
+    -fx-stroke: black;
+    -fx-stroke-width: 1;
+}
+.selected{
+    -fx-background-color: green;
 }
 
 .start_background{
