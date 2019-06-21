@@ -21,7 +21,7 @@ public class Battlefield {
 
     public Scene getGameScreen() {
         Group root = new Group();
-        Scene scene = new Scene(root, 800, 600/*, new ImagePattern(new Image("img/water.jpg"))*/);
+        Scene scene = new Scene(root, 800, 600, new ImagePattern(new Image("img/water.jpg")));
         scene.getStylesheets().add(getClass().getResource("style.css").toExternalForm());
         getBattlefield(scene, root);
         return scene;
