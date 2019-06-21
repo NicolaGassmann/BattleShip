@@ -13,59 +13,63 @@ public class Ship {
     public Ship(String name, int length, Paint fill) {
         this.length = length;
         body = new Rectangle(length * 50, 50, fill);
-        hitbox = new Rectangle(body.getWidth()+100, body.getHeight()+100);
+        body.relocate(50, 50);
+        hitbox = new Rectangle(body.getWidth() + 100, body.getHeight() + 100);
         this.direction = "horizontal";
         this.name = name;
     }
 
+    //moves the ship to the coordinates needed when given in x 0 to 9 and y 0 to 9
     public void moveShip(double x, double y) {
         x = x * 50;
         y = y * 50;
         //set position of ship if the ship is vertical
         if (direction.equals("vertical")) {
             double xShit = 25 * (length - 1);
-            getShip().setX(x - xShit);
+            body.setX(x - xShit);
             if (length % 2 == 0) {
-                getShip().setY(y + 25);
+                body.setY(y + 25);
             } else {
-                getShip().setY(y);
+                body.setY(y);
             }
-
 
             //make sure ship stays in battlefield
-            if (getShip().getY() < xShit) {
-                getShip().setY(xShit);
+            if (body.getY() < xShit) {
+                body.setY(xShit);
             }
-            if (getShip().getY() > 500 - length * 50 + xShit) {
-                getShip().setY(500 - length * 50 + xShit);
+            if (body.getY() > 500 - length * 50 + xShit) {
+                body.setY(500 - length * 50 + xShit);
             }
 
             //set position of ship if ship is horizontal
         } else {
             if (length > 3) {
-                getShip().setX(x - 100);
+                body.setX(x - 100);
             } else {
-                getShip().setX(x - 50);
+                body.setX(x - 50);
             }
-            getShip().setY(y + 0.4);
+            body.setY(y + 0.4);
 
             //make sure ship stays in battlefield
-            if (getShip().getX() > 500 - length * 50) {
-                getShip().setX(500 - length * 50);
+            if (body.getX() > 500 - length * 50) {
+                body.setX(500 - length * 50);
             }
-            if (getShip().getX() < 0) {
-                getShip().setX(0);
+            if (body.getX() < 0) {
+                body.setX(0);
             }
         }
     }
 
+    //change the direction of the boat and hitbox from horizontal to vertical and vice versa
     public void changeDirection() {
         if (this.direction.equals("horizontal")) {
             this.direction = "vertical";
             getShip().setRotate(90);
+            hitbox.setRotate(90);
         } else if (this.direction.equals("vertical")) {
             this.direction = "horizontal";
             getShip().setRotate(0);
+            hitbox.setRotate(0);
         }
 
     }
@@ -76,8 +80,8 @@ public class Ship {
         double absoluteX = getShip().getX();
         double absoluteY = getShip().getY();
         //calculate absolute coordinates to position coordinates (0 to 10 and a to j)
-        int posX = (int) Math.round(absoluteX / 51);
-        int posY = (int) Math.round(absoluteY / 51);
+        int posX = (int) Math.round(absoluteX / 50);
+        int posY = (int) Math.round(absoluteY / 50);
         if (direction.equals("vertical")) {
             posX = posX + 1;
             posY = posY - 2;
@@ -175,14 +179,14 @@ public class Ship {
         String endPosition = StringEndY + "/" + StringEndX;
         //make one string to output the position
         position = startPosition + " to " + endPosition;
-        System.out.println("position = " + position);
         return position;
     }
 
-    public void placeHitbox(Group root){
-        root.getChildren().add(hitbox);
-        hitbox.setX(getShip().getX()-50);
-        hitbox.setY(getShip().getY()-50);
+    //places the hitbox under the boat
+    public void placeHitbox() {
+        hitbox.setVisible(false);
+        hitbox.setX(getShip().getX());
+        hitbox.setY(getShip().getY());
     }
 
     public Rectangle getShip() {
