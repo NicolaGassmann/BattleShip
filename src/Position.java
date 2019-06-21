@@ -1,7 +1,9 @@
+import javafx.geometry.Pos;
+
 public class Position {
 
-    private static int x;
-    private static int y;
+    private int x;
+    private int y;
 
     public int getX() {
         return x;
