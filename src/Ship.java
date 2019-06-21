@@ -1,9 +1,11 @@
+import javafx.scene.Group;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 
 public class Ship {
     private String name;
     private Rectangle body;
+    private Rectangle hitbox;
     private String position;
     private int length;
     private String direction;
@@ -11,6 +13,7 @@ public class Ship {
     public Ship(String name, int length, Paint fill) {
         this.length = length;
         body = new Rectangle(length * 50, 50, fill);
+        hitbox = new Rectangle(body.getWidth()+100, body.getHeight()+100);
         this.direction = "horizontal";
         this.name = name;
     }
@@ -176,6 +179,11 @@ public class Ship {
         return position;
     }
 
+    public void placeHitbox(Group root){
+        root.getChildren().add(hitbox);
+        hitbox.setX(getShip().getX()-50);
+        hitbox.setY(getShip().getY()-50);
+    }
 
     public Rectangle getShip() {
         return this.body;
@@ -191,5 +199,9 @@ public class Ship {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Rectangle getHitbox() {
+        return hitbox;
     }
 }

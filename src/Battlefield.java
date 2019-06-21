@@ -18,22 +18,21 @@ public class Battlefield {
     private int shipCounter = 0;
     private int maxBoats = 10;
     private List<Ship> ships = new ArrayList<>();
+    private List<Rectangle> hitboxes = new ArrayList<>();
 
     public Scene getGameScreen() {
         Group root = new Group();
-
-        Scene scene = new Scene(root, 800, 600 ,new ImagePattern(new Image("img/water.jpg")));
+        Scene scene = new Scene(root, 800, 600/*, new ImagePattern(new Image("img/water.jpg"))*/);
         scene.getStylesheets().add(getClass().getResource("style.css").toExternalForm());
         getBattlefield(scene, root);
         return scene;
-
     }
 
-    private boolean checkIfPlaceTaken(Shape block, List<Ship> blocks) {
+    private boolean checkIfPlaceTaken(Shape block, List<Rectangle> blocks) {
         boolean collisionDetected = false;
-        for (Ship ship : blocks) {
-            if (ship.getShip() != block) {
-                Shape intersect = Shape.intersect(block, ship.getShip());
+        for (Rectangle hitbox : blocks) {
+            if (hitbox != block) {
+                Shape intersect = Shape.intersect(block, hitbox);
                 if (intersect.getBoundsInLocal().getWidth() != -1) {
                     collisionDetected = true;
                 }
@@ -63,15 +62,18 @@ public class Battlefield {
             });
             region.setOnMouseClicked(event -> {
                 if (event.getButton() == MouseButton.PRIMARY) {
-                    if (!checkIfPlaceTaken(selectedBoat.getShip(), ships) && shipCounter <= 10) {
+                    if (!checkIfPlaceTaken(selectedBoat.getShip(), hitboxes) && shipCounter <= 10) {
                         switch (shipCounter) {
                             case 1:
+                                selectedBoat.placeHitbox(root);
                                 createShip(root, "submarine", 4, BLUE);
                                 break;
                             case 2:
+                                selectedBoat.placeHitbox(root);
                                 createShip(root, "flattop", 5, GREEN);
                                 break;
                             case 3:
+                                selectedBoat.placeHitbox(root);
                                 selectedBoat = new Ship("end", 0, WHITE);
                                 shipCounter++;
                                 break;
@@ -97,6 +99,7 @@ public class Battlefield {
     public void createShip(Group root, String name, int length, Paint paint) {
         Ship ship = new Ship(name, length, paint);
         ships.add(ship);
+        hitboxes.add(ship.getHitbox());
         ship.getShip().setVisible(true);
         root.getChildren().add(ship.getShip());
         ship.getShip().toBack();
