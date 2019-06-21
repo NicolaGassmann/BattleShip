@@ -16,7 +16,7 @@ import java.awt.event.MouseEvent;
 import static javafx.scene.paint.Color.*;
 
 public class Game {
-
+    private Ship selectedBoat;
 
     public Scene getStartScreen(String styleSheet, Stage stage) {
         BorderPane root = new BorderPane();
@@ -45,10 +45,11 @@ public class Game {
 
     public Scene getBattlefield() {
         GridPane battlefield = new GridPane();
-        Ship submarine = new Ship(4, BLUE);
+        Ship submarine = new Ship(5, BLUE);
         Group root = new Group();
         root.getChildren().add(submarine.getShip());
         root.getChildren().add(battlefield);
+        selectedBoat = submarine;
         Scene scene = new Scene(root, 800, 600, new ImagePattern(new Image("img/water.jpg")));
 
         scene.getStylesheets().add(getClass().getResource("style.css").toExternalForm());
@@ -63,14 +64,17 @@ public class Game {
             region.setStroke(BLACK);
 
             region.setOnMouseEntered(mouse -> {
-                submarine.moveShip(region.getX(), region.getY());
                 double newX = tile.getX()*51;
                 double newY = tile.getY()*51;
-                submarine.moveShip(newX, newY);
+                selectedBoat.moveShip(newX, newY);
+                selectedBoat.getPosition();
+            });
+            region.setOnMouseClicked(event->{
+                if(event.getButton() == MouseButton.PRIMARY) {
+                    selectedBoat = new Ship(1, BLACK);
+                }
             });
             battlefield.add(region, x, y);
-            System.out.println("y = " + region.getY());
-            System.out.println("x = " + region.getX());
             x++;
             if (x > 9) {
                 x = 0;
