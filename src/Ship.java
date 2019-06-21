@@ -1,4 +1,3 @@
-import javafx.event.Event;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 

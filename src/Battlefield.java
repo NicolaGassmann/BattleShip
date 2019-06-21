@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static javafx.scene.paint.Color.*;
-import static javafx.scene.paint.Color.WHITE;
 
 public class Battlefield {
     private Ship selectedBoat;
@@ -22,13 +21,10 @@ public class Battlefield {
 
     public Scene getGameScreen() {
         Group root = new Group();
-        Rectangle measure = new Rectangle(501, 10, RED);
-        root.getChildren().add(measure);
 
-        Scene scene = new Scene(root, 800, 600 /*,new ImagePattern(new Image("img/water.jpg"))*/);
+        Scene scene = new Scene(root, 800, 600 ,new ImagePattern(new Image("img/water.jpg")));
         scene.getStylesheets().add(getClass().getResource("style.css").toExternalForm());
         getBattlefield(scene, root);
-        measure.toFront();
         return scene;
 
     }
@@ -98,8 +94,8 @@ public class Battlefield {
         return battlefield;
     }
 
-    public void createShip(Group root, String name, int length, Paint paint){
-        Ship ship = new Ship(name,length, paint);
+    public void createShip(Group root, String name, int length, Paint paint) {
+        Ship ship = new Ship(name, length, paint);
         ships.add(ship);
         ship.getShip().setVisible(true);
         root.getChildren().add(ship.getShip());
