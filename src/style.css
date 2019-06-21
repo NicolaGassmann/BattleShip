@@ -9,8 +9,9 @@
     -fx-background-color: green;
 }
 
-.start_background{
+.root{
     -fx-background-image: url("img/start_screen.jpg");
-    -fx-background-width: 800;
-    -fx-background-height: 800;
+    -fx-background-position: left top, center;
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: cover, auto;
 }
