@@ -13,7 +13,7 @@ public class Startmenu {
     public Scene getStartScreen(String styleSheet, Stage stage) {
         Battlefield bf = new Battlefield();
         StackPane root = new StackPane();
-        Scene scene = new Scene(root, 800, 600);
+        Scene scene = new Scene(root, 850, 600);
 
         root.getStylesheets().add(getClass().getResource(styleSheet).toExternalForm());
 
@@ -30,7 +30,7 @@ public class Startmenu {
         logo.setFitWidth(150);
         logo.setFitHeight(150);
         Button start = new Button("Start");
-        start.setOnAction(event -> stage.setScene(bf.getGameScreen()));
+        start.setOnAction(event -> stage.setScene(bf.getPlacingScreen()));
         Button settings = new Button("Einstellungen");
         settings.setOnAction(event -> stage.setScene(getSettings(stage)));
         Button quit = new Button("Beenden");

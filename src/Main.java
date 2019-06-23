@@ -15,7 +15,7 @@ public class Main extends Application {
         Battlefield battlefield = new Battlefield();
         Scene startScreen = startmenu.getStartScreen("style.css", stage);
 
-        Scene gameScreen = battlefield.getGameScreen();
+        Scene placingScreen = battlefield.getPlacingScreen();
 
         stage.setScene(startScreen);
         stage.setResizable(false);

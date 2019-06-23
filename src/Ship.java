@@ -9,12 +9,14 @@ public class Ship {
     private String position;
     private int length;
     private String direction;
+    private boolean isPlaced;
 
     public Ship(String name, int length, Paint fill) {
         this.length = length;
         body = new Rectangle(length * 50, 50, fill);
         body.relocate(50, 50);
         hitbox = new Rectangle(body.getWidth() + 100, body.getHeight() + 100);
+        isPlaced = false;
         this.direction = "horizontal";
         this.name = name;
     }
@@ -207,5 +209,13 @@ public class Ship {
 
     public Rectangle getHitbox() {
         return hitbox;
+    }
+
+    public boolean isPlaced() {
+        return isPlaced;
+    }
+
+    public void setPlaced(boolean placed) {
+        isPlaced = placed;
     }
 }
