@@ -15,7 +15,8 @@ public class Ship {
         this.length = length;
         body = new Rectangle(length * 50, 50, fill);
         body.relocate(50, 50);
-        hitbox = new Rectangle(body.getWidth() + 100, body.getHeight() + 100);
+        hitbox = new Rectangle(body.getWidth() + 50, body.getHeight() + 50);
+        hitbox.relocate(25, 25);
         isPlaced = false;
         this.direction = "horizontal";
         this.name = name;
@@ -186,7 +187,6 @@ public class Ship {
 
     //places the hitbox under the boat
     public void placeHitbox() {
-        hitbox.setVisible(false);
         hitbox.setX(getShip().getX());
         hitbox.setY(getShip().getY());
     }

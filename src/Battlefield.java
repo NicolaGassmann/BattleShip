@@ -34,20 +34,6 @@ public class Battlefield {
         return scene;
     }
 
-    //checks, if a thing touches a ship
-    private boolean checkIfPlaceTaken(Shape block, List<Ship> blocks) {
-        boolean collisionDetected = false;
-        for (Ship ship : blocks) {
-            if (ship.getHitbox() != block && ship != selectedBoat) {
-                Shape intersect = Shape.intersect(block, ship.getHitbox());
-                if (intersect.getBoundsInLocal().getWidth() != -1) {
-                    collisionDetected = true;
-                }
-            }
-        }
-        return collisionDetected;
-    }
-
     //returns the ship placing field as gridPane
     public GridPane getPlacingField(Scene scene) {
         GridPane battlefield = new GridPane();
@@ -194,5 +180,19 @@ public class Battlefield {
         settings.setLayoutX(600);
         settings.setLayoutY(50);
         return settings;
+    }
+
+    //checks, if a thing touches a ship
+    private boolean checkIfPlaceTaken(Shape block, List<Ship> ships) {
+        boolean collisionDetected = false;
+        for (Ship ship : ships) {
+            if (ship.getHitbox() != block && ship != selectedBoat) {
+                Shape intersect = Shape.intersect(block, ship.getHitbox());
+                if (intersect.getBoundsInLocal().getWidth() != -1) {
+                    collisionDetected = true;
+                }
+            }
+        }
+        return collisionDetected;
     }
 }
