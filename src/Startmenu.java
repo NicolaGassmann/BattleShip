@@ -49,7 +49,7 @@ public class Startmenu {
 
     public Scene getSettings(Stage stage) {
         BorderPane root = new BorderPane();
-        Scene scene = new Scene(root, 800, 600);
+        Scene scene = new Scene(root, 850, 600);
 
         root.getStylesheets().add(getClass().getResource("style.css").toExternalForm());
 
