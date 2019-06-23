@@ -143,16 +143,8 @@ public class Ship {
         return this.body;
     }
 
-    public int getLength() {
-        return this.length;
-    }
-
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     Rectangle getHitBox() {
