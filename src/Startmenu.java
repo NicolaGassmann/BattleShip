@@ -5,8 +5,12 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
+
+import java.net.URISyntaxException;
 
 public class Startmenu {
 
@@ -43,6 +47,8 @@ public class Startmenu {
 
         root.setAlignment(Pos.CENTER);
         root.getChildren().addAll(glass, vbox);
+
+
 
         return scene;
     }

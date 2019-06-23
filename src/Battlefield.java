@@ -8,11 +8,14 @@ import javafx.scene.image.Image;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,6 +34,7 @@ class Battlefield {
         scene.getStylesheets().add(getClass().getResource("style.css").toExternalForm());
         root.getChildren().add(getPlacingField(root));
         root.getChildren().add(getShipSettings(root));
+
         return scene;
     }
 
