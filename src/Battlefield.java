@@ -18,24 +18,24 @@ import java.util.List;
 
 import static javafx.scene.paint.Color.*;
 
-public class Battlefield {
+class Battlefield {
     private Ship selectedBoat;
     private int shipCounter = 0;
     private int maxShips = 5;
     private List<Ship> ships = new ArrayList<>();
 
     //returns the ship placing screen
-    public Scene getPlacingScreen() {
+    Scene getPlacingScreen() {
         Group root = new Group();
         Scene scene = new Scene(root, 850, 600, new ImagePattern(new Image("img/water.jpg")));
         scene.getStylesheets().add(getClass().getResource("style.css").toExternalForm());
-        root.getChildren().add(getPlacingField(scene));
+        root.getChildren().add(getPlacingField(root));
         root.getChildren().add(getShipSettings(root));
         return scene;
     }
 
     //returns the ship placing field as gridPane
-    public GridPane getPlacingField(Scene scene) {
+    private GridPane getPlacingField(Group root) {
         GridPane battlefield = new GridPane();
         battlefield.setLayoutX(50);
         battlefield.setLayoutY(50);
@@ -55,7 +55,6 @@ public class Battlefield {
                 double newY = tile.getY();
                 if(selectedBoat != null && !selectedBoat.isPlaced()) {
                     selectedBoat.moveShip(newX, newY);
-                    selectedBoat.getPosition();
                 }
             });
 
@@ -63,9 +62,33 @@ public class Battlefield {
             region.setOnMouseClicked(event -> {
                 if (event.getButton() == MouseButton.PRIMARY) {
                     if(selectedBoat != null) {
-                        selectedBoat.placeHitbox();
+                        selectedBoat.placeHitBox();
                         if (!checkIfPlaceTaken(selectedBoat.getShip(), ships)) {
-                            selectedBoat.setPlaced(true);
+                            selectedBoat.setPlaced();
+                            selectedBoat.setPosition();
+                        }
+                    }
+                }
+                //changes the direction of the ship on right click
+                if (event.getButton() == MouseButton.SECONDARY) {
+                    if(selectedBoat != null && !selectedBoat.isPlaced()) {
+                        selectedBoat.changeDirection();
+                    }else{
+                        int tileX = (int) Math.round(tile.getX());
+                        int tileY = (int) Math.round(tile.getY());
+                        boolean shipGetsDeleted = false;
+                        //checks if any of the ships is there
+                        for(Ship ship:ships){
+                            if(ship.boatIsThere(tileX, tileY)){
+                                shipGetsDeleted = true;
+                                selectedBoat = ship;
+                            }
+                        }
+                        //if there was a ship found shipsGetsDeleted will be true and that ship gets removed
+                        if(shipGetsDeleted) {
+                            ships.remove(selectedBoat);
+                            root.getChildren().remove(selectedBoat.getShip());
+                            shipCounter--;
                         }
                     }
                 }
@@ -77,18 +100,11 @@ public class Battlefield {
                 y++;
             }
         }
-
-        //changes the direction of the ship on right click
-        scene.setOnMouseClicked(event -> {
-            if (event.getButton() == MouseButton.SECONDARY) {
-                selectedBoat.changeDirection();
-            }
-        });
         return battlefield;
     }
 
     //creates a ship and adds it to the given group and selects the boat
-    public void createShip(Group root, String name, int length, Paint paint) {
+    private void createShip(Group root, String name, int length, Paint paint) {
         Ship ship = new Ship(name, length, paint);
         ships.add(ship);
         ship.getShip().setVisible(true);
@@ -99,7 +115,7 @@ public class Battlefield {
     }
 
     //returns the settings where the player can customize his ships
-    public VBox getShipSettings(Group root){
+    private VBox getShipSettings(Group root) {
         VBox settings = new VBox();
         VBox boatName = new VBox();
         VBox boatLength = new VBox();
@@ -186,8 +202,8 @@ public class Battlefield {
     private boolean checkIfPlaceTaken(Shape block, List<Ship> ships) {
         boolean collisionDetected = false;
         for (Ship ship : ships) {
-            if (ship.getHitbox() != block && ship != selectedBoat) {
-                Shape intersect = Shape.intersect(block, ship.getHitbox());
+            if (ship.getHitBox() != block && ship != selectedBoat) {
+                Shape intersect = Shape.intersect(block, ship.getHitBox());
                 if (intersect.getBoundsInLocal().getWidth() != -1) {
                     collisionDetected = true;
                 }

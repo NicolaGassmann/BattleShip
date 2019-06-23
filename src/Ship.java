@@ -1,29 +1,28 @@
-import javafx.scene.Group;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 
 public class Ship {
     private String name;
     private Rectangle body;
-    private Rectangle hitbox;
+    private Rectangle hitBox;
     private String position;
     private int length;
     private String direction;
     private boolean isPlaced;
 
-    public Ship(String name, int length, Paint fill) {
+    Ship(String name, int length, Paint fill) {
         this.length = length;
         body = new Rectangle(length * 50, 50, fill);
         body.relocate(50, 50);
-        hitbox = new Rectangle(body.getWidth() + 50, body.getHeight() + 50);
-        hitbox.relocate(25, 25);
+        hitBox = new Rectangle(body.getWidth() + 50, body.getHeight() + 50);
+        hitBox.relocate(25, 25);
         isPlaced = false;
         this.direction = "horizontal";
         this.name = name;
     }
 
     //moves the ship to the coordinates needed when given in x 0 to 9 and y 0 to 9
-    public void moveShip(double x, double y) {
+    void moveShip(double x, double y) {
         x = x * 50;
         y = y * 50;
         //set position of ship if the ship is vertical
@@ -63,26 +62,26 @@ public class Ship {
         }
     }
 
-    //change the direction of the boat and hitbox from horizontal to vertical and vice versa
-    public void changeDirection() {
+    //change the direction of the boat and hitBox from horizontal to vertical and vice versa
+    void changeDirection() {
         if (this.direction.equals("horizontal")) {
             this.direction = "vertical";
             getShip().setRotate(90);
-            hitbox.setRotate(90);
+            hitBox.setRotate(90);
         } else if (this.direction.equals("vertical")) {
             this.direction = "horizontal";
             getShip().setRotate(0);
-            hitbox.setRotate(0);
+            hitBox.setRotate(0);
         }
 
     }
 
-    //returns coordinates from start point to end point of the ship as string (y/x to y/x)
-    public String getPosition() {
+    //returns coordinates from start point to end point of the ship as string (x/y to x/y)
+    void setPosition() {
         //get absolute coordinates of top left point of the ship
         double absoluteX = getShip().getX();
         double absoluteY = getShip().getY();
-        //calculate absolute coordinates to position coordinates (0 to 10 and a to j)
+        //calculate absolute coordinates to position coordinates (0 to 9 and a to j)
         int posX = (int) Math.round(absoluteX / 50);
         int posY = (int) Math.round(absoluteY / 50);
         if (direction.equals("vertical")) {
@@ -98,41 +97,10 @@ public class Ship {
         }
         //make coordinates to String
         String StringPosX = Integer.toString(posX);
-        String StringPosY = "";
-        switch (posY) {
-            case 0:
-                StringPosY = "a";
-                break;
-            case 1:
-                StringPosY = "b";
-                break;
-            case 2:
-                StringPosY = "c";
-                break;
-            case 3:
-                StringPosY = "d";
-                break;
-            case 4:
-                StringPosY = "e";
-                break;
-            case 5:
-                StringPosY = "f";
-                break;
-            case 6:
-                StringPosY = "g";
-                break;
-            case 7:
-                StringPosY = "h";
-                break;
-            case 8:
-                StringPosY = "i";
-                break;
-            case 9:
-                StringPosY = "j";
-                break;
-        }
+        String StringPosY = Integer.toString(posY);
+
         //combine both strings
-        String startPosition = StringPosY + "/" + StringPosX;
+        String startPosition = StringPosX + "/" + StringPosY;
 
         //get coordinates of end point of the ship
         int endX;
@@ -146,52 +114,32 @@ public class Ship {
         }
         //do the same as before with end coordinates
         String StringEndX = Integer.toString(endX);
-        String StringEndY = "";
-        switch (endY) {
-            case 0:
-                StringEndY = "a";
-                break;
-            case 1:
-                StringEndY = "b";
-                break;
-            case 2:
-                StringEndY = "c";
-                break;
-            case 3:
-                StringEndY = "d";
-                break;
-            case 4:
-                StringEndY = "e";
-                break;
-            case 5:
-                StringEndY = "f";
-                break;
-            case 6:
-                StringEndY = "g";
-                break;
-            case 7:
-                StringEndY = "h";
-                break;
-            case 8:
-                StringEndY = "i";
-                break;
-            case 9:
-                StringEndY = "j";
-                break;
-        }
-        String endPosition = StringEndY + "/" + StringEndX;
+        String StringEndY = Integer.toString(endY);
+
+        String endPosition = StringEndX + "/" + StringEndY;
         //make one string to output the position
         position = startPosition + " to " + endPosition;
-        return position;
     }
 
-    //places the hitbox under the boat
-    public void placeHitbox() {
-        hitbox.setX(getShip().getX());
-        hitbox.setY(getShip().getY());
+    //checks if a ship is under the given tile
+    boolean boatIsThere(int tileX, int tileY) {
+        String[] coords = position.split(" to ");
+        String[] startCoords = coords[0].split("/");
+        String[] endCoords = coords[1].split("/");
+        int startX = Integer.parseInt(startCoords[0]);
+        int startyY = Integer.parseInt(startCoords[1]);
+        int endX = Integer.parseInt(endCoords[0]);
+        int endY = Integer.parseInt(endCoords[1]);
+        return between(tileX, startX, endX) && between(tileY, startyY, endY);
     }
 
-    public Rectangle getShip() {
+    //places the hitBox under the boat
+    void placeHitBox() {
+        hitBox.setX(getShip().getX());
+        hitBox.setY(getShip().getY());
+    }
+
+    Rectangle getShip() {
         return this.body;
     }
 
@@ -207,15 +155,19 @@ public class Ship {
         this.name = name;
     }
 
-    public Rectangle getHitbox() {
-        return hitbox;
+    Rectangle getHitBox() {
+        return hitBox;
     }
 
-    public boolean isPlaced() {
+    boolean isPlaced() {
         return isPlaced;
     }
 
-    public void setPlaced(boolean placed) {
-        isPlaced = placed;
+    void setPlaced() {
+        isPlaced = true;
+    }
+
+    private boolean between(int value, int minValue, int maxValue) {
+        return value >= minValue && value <= maxValue;
     }
 }
