@@ -33,7 +33,7 @@ public class Main extends Application {
 
         //by setting autoPlay to true, the audio will be played
         mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
-        mediaPlayer.setAutoPlay(true);
+        //mediaPlayer.setAutoPlay(true);
 
         stage.setScene(placingScreen);
         stage.setResizable(false);

@@ -9,6 +9,7 @@ public class Ship {
     private int length;
     private String direction;
     private boolean isPlaced;
+    private boolean isAiShip;
 
     Ship(String name, int length, Paint fill) {
         this.length = length;
@@ -17,6 +18,7 @@ public class Ship {
         hitBox = new Rectangle(body.getWidth() + 50, body.getHeight() + 50);
         hitBox.relocate(25, 25);
         isPlaced = false;
+        isAiShip = false;
         this.direction = "horizontal";
         this.name = name;
     }
@@ -159,7 +161,15 @@ public class Ship {
         isPlaced = true;
     }
 
+    String getPosition(){
+        return position;
+    }
+
     private boolean between(int value, int minValue, int maxValue) {
         return value >= minValue && value <= maxValue;
+    }
+
+    public void setAiShip(boolean aiShip) {
+        isAiShip = aiShip;
     }
 }

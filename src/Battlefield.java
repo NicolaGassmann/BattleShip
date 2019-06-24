@@ -8,16 +8,14 @@ import javafx.scene.image.Image;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import static javafx.scene.paint.Color.*;
 
@@ -26,13 +24,15 @@ class Battlefield {
     private int shipCounter = 0;
     private int maxShips = 5;
     private List<Ship> ships = new ArrayList<>();
+    private List<Ship> aiShips = new ArrayList<>();
 
     //returns the ship placing screen
     Scene getPlacingScreen() {
         Group root = new Group();
         Scene scene = new Scene(root, 850, 600, new ImagePattern(new Image("img/water.jpg")));
+        GridPane placingFiled = getPlacingField(root);
         scene.getStylesheets().add(getClass().getResource("style.css").toExternalForm());
-        root.getChildren().add(getPlacingField(root));
+        root.getChildren().add(placingFiled);
         root.getChildren().add(getShipSettings(root));
 
         return scene;
@@ -90,8 +90,11 @@ class Battlefield {
                         }
                         //if there was a ship found shipsGetsDeleted will be true and that ship gets removed
                         if(shipGetsDeleted) {
-                            ships.remove(selectedBoat);
+                            int removingShip = ships.indexOf(selectedBoat);
                             root.getChildren().remove(selectedBoat.getShip());
+                            root.getChildren().remove(aiShips.get(removingShip).getShip());
+                            aiShips.remove(removingShip);
+                            ships.remove(selectedBoat);
                             shipCounter--;
                         }
                     }
@@ -105,17 +108,6 @@ class Battlefield {
             }
         }
         return battlefield;
-    }
-
-    //creates a ship and adds it to the given group and selects the boat
-    private void createShip(Group root, String name, int length, Paint paint) {
-        Ship ship = new Ship(name, length, paint);
-        ships.add(ship);
-        ship.getShip().setVisible(true);
-        root.getChildren().add(ship.getShip());
-        ship.getShip().toBack();
-        selectedBoat = ship;
-        shipCounter++;
     }
 
     //returns the settings where the player can customize his ships
@@ -172,6 +164,7 @@ class Battlefield {
                             if (shipCounter < maxShips) {
                                 settings.getChildren().remove(maxShipsWarning);
                                 createShip(root, tfBoatName.getText(), intBoatLength, cpBoatColor.getValue());
+                                createAndPlaceAiShip(root, tfBoatName.getText(), intBoatLength, cpBoatColor.getValue());
                             } else {
                                 if(!settings.getChildren().contains(maxShipsWarning)){
                                     settings.getChildren().add(maxShipsWarning);
@@ -183,7 +176,8 @@ class Battlefield {
                             }
                         }
                     } else {
-                        createShip(root, tfBoatName.getText(), Integer.parseInt(tfBoatLength.getText()), cpBoatColor.getValue());
+                        createShip(root, tfBoatName.getText(), intBoatLength, cpBoatColor.getValue());
+                        createAndPlaceAiShip(root, tfBoatName.getText(), intBoatLength, cpBoatColor.getValue());
                     }
                 }
             }else {
@@ -202,6 +196,36 @@ class Battlefield {
         return settings;
     }
 
+    //creates an AI ship and uses the placeAiShip function to place it
+    private void createAndPlaceAiShip(Group root, String name, int length, Paint paint){
+        Ship ship = new Ship(name, length, paint);
+        ship.setAiShip(true);
+        root.getChildren().add(ship.getShip());
+        placeAiShip(ship);
+        for(;checkIfPlaceTaken(ship.getShip(), aiShips);) {
+            placeAiShip(ship);
+        }
+        ship.setPlaced();
+        ship.setPosition();
+        aiShips.add(ship);
+        ship.placeHitBox();
+        ship.setPlaced();
+        ship.setPosition();
+
+        System.out.println("ship = " + ship.getPosition());
+    }
+
+    //creates a ship and adds it to the given group and selects the boat
+    private void createShip(Group root, String name, int length, Paint paint) {
+        Ship ship = new Ship(name, length, paint);
+        ships.add(ship);
+        ship.getShip().setVisible(true);
+        root.getChildren().add(ship.getShip());
+        ship.getShip().toBack();
+        selectedBoat = ship;
+        shipCounter++;
+    }
+
     //checks, if a thing touches a ship
     private boolean checkIfPlaceTaken(Shape block, List<Ship> ships) {
         boolean collisionDetected = false;
@@ -214,5 +238,20 @@ class Battlefield {
             }
         }
         return collisionDetected;
+    }
+
+    //places ai ship at a random position in the field
+    private void placeAiShip(Ship ship){
+        Random random = new Random();
+        int min = 0;
+        int max = 9;
+        int x = random.nextInt(max - min) + min;
+        int y = random.nextInt(max - min) + min;
+        int direction = random.nextInt(2);
+        System.out.println("direction = " + direction);
+        if(direction == 1){
+            ship.changeDirection();
+        }
+        ship.moveShip(x, y);
     }
 }
