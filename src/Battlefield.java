@@ -197,10 +197,12 @@ class Battlefield {
     }
 
     //creates an AI ship and uses the placeAiShip function to place it
-    private void createAndPlaceAiShip(Group root, String name, int length, Paint paint){
+    private void createAndPlaceAiShip(Group root, String name, int length, Paint paint) {
+        //create ship with the same name, length and color as the users ship, but with isAI set true
         Ship ship = new Ship(name, length, paint);
         ship.setAiShip(true);
         root.getChildren().add(ship.getShip());
+        //ship gets placed the first time and then replaced if the position isn't correct
         placeAiShip(ship);
         for(;checkIfPlaceTaken(ship.getShip(), aiShips);) {
             placeAiShip(ship);
@@ -211,8 +213,6 @@ class Battlefield {
         ship.placeHitBox();
         ship.setPlaced();
         ship.setPosition();
-
-        System.out.println("ship = " + ship.getPosition());
     }
 
     //creates a ship and adds it to the given group and selects the boat
@@ -241,17 +241,19 @@ class Battlefield {
     }
 
     //places ai ship at a random position in the field
-    private void placeAiShip(Ship ship){
+    private void placeAiShip(Ship ship) {
+        //creates two random numbers between 0 and 9 which will be the ships coordinates
         Random random = new Random();
         int min = 0;
         int max = 9;
         int x = random.nextInt(max - min) + min;
         int y = random.nextInt(max - min) + min;
+        //creates a random number between 0 and 1 which will decide if the ship lies horizontal or vertical
         int direction = random.nextInt(2);
-        System.out.println("direction = " + direction);
         if(direction == 1){
             ship.changeDirection();
         }
+        //move the ship to the coordinates
         ship.moveShip(x, y);
     }
 }
