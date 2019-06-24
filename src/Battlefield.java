@@ -92,7 +92,6 @@ class Battlefield {
                         if(shipGetsDeleted) {
                             int removingShip = ships.indexOf(selectedBoat);
                             root.getChildren().remove(selectedBoat.getShip());
-                            root.getChildren().remove(aiShips.get(removingShip).getShip());
                             aiShips.remove(removingShip);
                             ships.remove(selectedBoat);
                             shipCounter--;
@@ -164,7 +163,7 @@ class Battlefield {
                             if (shipCounter < maxShips) {
                                 settings.getChildren().remove(maxShipsWarning);
                                 createShip(root, tfBoatName.getText(), intBoatLength, cpBoatColor.getValue());
-                                createAndPlaceAiShip(root, tfBoatName.getText(), intBoatLength, cpBoatColor.getValue());
+                                createAndPlaceAiShip(tfBoatName.getText(), intBoatLength, cpBoatColor.getValue());
                             } else {
                                 if(!settings.getChildren().contains(maxShipsWarning)){
                                     settings.getChildren().add(maxShipsWarning);
@@ -177,7 +176,7 @@ class Battlefield {
                         }
                     } else {
                         createShip(root, tfBoatName.getText(), intBoatLength, cpBoatColor.getValue());
-                        createAndPlaceAiShip(root, tfBoatName.getText(), intBoatLength, cpBoatColor.getValue());
+                        createAndPlaceAiShip(tfBoatName.getText(), intBoatLength, cpBoatColor.getValue());
                     }
                 }
             }else {
@@ -197,11 +196,10 @@ class Battlefield {
     }
 
     //creates an AI ship and uses the placeAiShip function to place it
-    private void createAndPlaceAiShip(Group root, String name, int length, Paint paint) {
+    private void createAndPlaceAiShip(String name, int length, Paint paint) {
         //create ship with the same name, length and color as the users ship, but with isAI set true
         Ship ship = new Ship(name, length, paint);
         ship.setAiShip(true);
-        root.getChildren().add(ship.getShip());
         //ship gets placed the first time and then replaced if the position isn't correct
         placeAiShip(ship);
         for(;checkIfPlaceTaken(ship.getShip(), aiShips);) {
