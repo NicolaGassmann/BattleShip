@@ -31,11 +31,11 @@ public class Main extends Application {
         //Instantiating MediaPlayer class
         MediaPlayer mediaPlayer = new MediaPlayer(media);
 
-        //by setting this property to true, the audio will be played
-        mediaPlayer.setAutoPlay(true);
+        //by setting autoPlay to true, the audio will be played
         mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
+        mediaPlayer.setAutoPlay(true);
 
-        stage.setScene(startScreen);
+        stage.setScene(placingScreen);
         stage.setResizable(false);
         stage.show();
     }
