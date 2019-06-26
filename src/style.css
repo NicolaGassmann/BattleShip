@@ -13,7 +13,12 @@
     -fx-background-size: cover, auto;
 }
 
-.battlefield Line {
+.placingField Line {
     -fx-stroke: BLACK;
-    -fx-stroke-width: 2;
+    -fx-stroke-width: 30;
+}
+
+.myGridStyle Line {
+  -fx-stroke : WHITE;
+  -fx-stroke-width: 2;
 }

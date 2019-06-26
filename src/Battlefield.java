@@ -1,3 +1,5 @@
+import javafx.animation.ScaleTransition;
+import javafx.animation.TranslateTransition;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -12,6 +14,7 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
+import javafx.util.Duration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,29 +25,57 @@ import static javafx.scene.paint.Color.*;
 class Battlefield {
     private Ship selectedBoat;
     private int shipCounter = 0;
-    private int maxShips = 5;
+    private int maxShips = 10;
+    private int minShips = 1;
     private List<Ship> ships = new ArrayList<>();
     private List<Ship> aiShips = new ArrayList<>();
+    private VBox settings = new VBox();
 
     //returns the ship placing screen
     Scene getPlacingScreen() {
         Group root = new Group();
         Scene scene = new Scene(root, 850, 600, new ImagePattern(new Image("img/water.jpg")));
-        GridPane placingFiled = getPlacingField(root);
-        Button finnish = new Button();
+        GridPane placingField = getPlacingField(root);
+        Button finish = new Button("finish");
+        finish.relocate(600, 550);
+        finish.setOnAction(event -> {
+            if (shipCounter >= minShips) {
+                //makes the grid small
+                root.getChildren().remove(settings);
+                root.getChildren().remove(finish);
+                Group placingFieldGroup = new Group();
+                placingField.getStyleClass().add("myGridStyle");
+                root.getChildren().add(placingFieldGroup);
+                placingFieldGroup.getChildren().add(placingField);
+                for(Ship ship:ships){
+                    placingFieldGroup.getChildren().add(ship.getShip());
+                    ship.getShip().toBack();
+                }
+                ScaleTransition st = new ScaleTransition(Duration.seconds(2), placingFieldGroup);
+                st.setToX(0.4);
+                st.setToY(0.4);
+                st.play();
 
+                TranslateTransition tt = new TranslateTransition(Duration.seconds(2), placingFieldGroup);
+                tt.setToX(425);
+                tt.setToY(-150);
+                tt.play();
+            }
+        });
+        root.getChildren().add(finish);
         scene.getStylesheets().add(getClass().getResource("style.css").toExternalForm());
-        root.getChildren().add(placingFiled);
-        root.getChildren().add(getShipSettings(root));
+        root.getChildren().add(placingField);
+        createShipSettings(root);
+        root.getChildren().add(settings);
 
         return scene;
     }
 
     //returns the ship placing field as gridPane
     private GridPane getPlacingField(Group root) {
-        GridPane battlefield = new GridPane();
-        battlefield.setLayoutX(50);
-        battlefield.setLayoutY(50);
+        GridPane placingField = new GridPane();
+        placingField.setLayoutX(50);
+        placingField.setLayoutY(50);
         int x = 0;
         int y = 0;
         //adds all 100 tiles to the grid and adds the mouse events
@@ -52,14 +83,14 @@ class Battlefield {
             Tile tile = new Tile(x, y);
             Rectangle region = tile.getTile();
             region.setFill(rgb(0, 0, 0, 0));
-            battlefield.setGridLinesVisible(true);
-            battlefield.getStyleClass().add("battlefield");
+            placingField.setGridLinesVisible(true);
+            placingField.getStyleClass().add("placingField");
 
             //move the ship to the current tile when the mouse enters it
             region.setOnMouseEntered(mouse -> {
                 double newX = tile.getX();
                 double newY = tile.getY();
-                if(selectedBoat != null && !selectedBoat.isPlaced()) {
+                if (selectedBoat != null && !selectedBoat.isPlaced()) {
                     selectedBoat.moveShip(newX, newY);
                 }
             });
@@ -67,7 +98,7 @@ class Battlefield {
             //places the selected ship if one is selected and only if no other ship is in the way
             region.setOnMouseClicked(event -> {
                 if (event.getButton() == MouseButton.PRIMARY) {
-                    if(selectedBoat != null) {
+                    if (selectedBoat != null) {
                         selectedBoat.placeHitBox();
                         if (!checkIfPlaceTaken(selectedBoat.getShip(), ships)) {
                             selectedBoat.setPlaced();
@@ -77,21 +108,21 @@ class Battlefield {
                 }
                 //changes the direction of the ship on right click
                 if (event.getButton() == MouseButton.SECONDARY) {
-                    if(selectedBoat != null && !selectedBoat.isPlaced()) {
+                    if (selectedBoat != null && !selectedBoat.isPlaced()) {
                         selectedBoat.changeDirection();
-                    }else{
+                    } else {
                         int tileX = (int) Math.round(tile.getX());
                         int tileY = (int) Math.round(tile.getY());
                         boolean shipGetsDeleted = false;
                         //checks if any of the ships is there
-                        for(Ship ship:ships){
-                            if(ship.boatIsThere(tileX, tileY)){
+                        for (Ship ship : ships) {
+                            if (ship.boatIsThere(tileX, tileY)) {
                                 shipGetsDeleted = true;
                                 selectedBoat = ship;
                             }
                         }
                         //if there was a ship found shipsGetsDeleted will be true and that ship gets removed
-                        if(shipGetsDeleted) {
+                        if (shipGetsDeleted) {
                             int removingShip = ships.indexOf(selectedBoat);
                             root.getChildren().remove(selectedBoat.getShip());
                             aiShips.remove(removingShip);
@@ -101,19 +132,19 @@ class Battlefield {
                     }
                 }
             });
-            battlefield.add(region, x, y);
+            placingField.add(region, x, y);
             x++;
             if (x > 9) {
                 x = 0;
                 y++;
             }
         }
-        return battlefield;
+        return placingField;
     }
 
     //returns the settings where the player can customize his ships
-    private VBox getShipSettings(Group root) {
-        VBox settings = new VBox();
+    private void createShipSettings(Group root) {
+        settings = new VBox();
         VBox boatName = new VBox();
         VBox boatLength = new VBox();
         VBox boatColor = new VBox();
@@ -144,17 +175,17 @@ class Battlefield {
         });
         Button create = new Button("create");
         //creates a boat when create button is pressed
-        create.setOnAction(event->{
+        create.setOnAction(event -> {
             //checks if the length field isn't empty
-            if(!tfBoatLength.getText().equals("")) {
+            if (!tfBoatLength.getText().equals("")) {
                 boatLength.getChildren().remove(emptyWarning);
                 int intBoatLength = Integer.parseInt(tfBoatLength.getText());
                 //checks if boat length is between 2 and 5
-                if(intBoatLength < 2 || intBoatLength > 5){
-                    if(!boatLength.getChildren().contains(lengthWarning)) {
+                if (intBoatLength < 2 || intBoatLength > 5) {
+                    if (!boatLength.getChildren().contains(lengthWarning)) {
                         boatLength.getChildren().add(lengthWarning);
                     }
-                }else {
+                } else {
                     boatLength.getChildren().remove(lengthWarning);
                     //checks if this is the first ship to be created
                     if (shipCounter != 0) {
@@ -167,12 +198,12 @@ class Battlefield {
                                 createShip(root, tfBoatName.getText(), intBoatLength, cpBoatColor.getValue());
                                 createAndPlaceAiShip(tfBoatName.getText(), intBoatLength, cpBoatColor.getValue());
                             } else {
-                                if(!settings.getChildren().contains(maxShipsWarning)){
+                                if (!settings.getChildren().contains(maxShipsWarning)) {
                                     settings.getChildren().add(maxShipsWarning);
                                 }
                             }
-                        }else{
-                            if(!settings.getChildren().contains(shipNotPlacedWarning)) {
+                        } else {
+                            if (!settings.getChildren().contains(shipNotPlacedWarning)) {
                                 settings.getChildren().add(shipNotPlacedWarning);
                             }
                         }
@@ -181,8 +212,8 @@ class Battlefield {
                         createAndPlaceAiShip(tfBoatName.getText(), intBoatLength, cpBoatColor.getValue());
                     }
                 }
-            }else {
-                if(!boatLength.getChildren().contains(emptyWarning)) {
+            } else {
+                if (!boatLength.getChildren().contains(emptyWarning)) {
                     boatLength.getChildren().add(emptyWarning);
                 }
             }
@@ -194,7 +225,6 @@ class Battlefield {
         settings.setSpacing(10);
         settings.setLayoutX(600);
         settings.setLayoutY(50);
-        return settings;
     }
 
     //creates an AI ship and uses the placeAiShip function to place it
@@ -204,7 +234,7 @@ class Battlefield {
         ship.setAiShip(true);
         //ship gets placed the first time and then replaced if the position isn't correct
         placeAiShip(ship);
-        for(;checkIfPlaceTaken(ship.getShip(), aiShips);) {
+        for (; checkIfPlaceTaken(ship.getShip(), aiShips); ) {
             placeAiShip(ship);
         }
         ship.setPlaced();
@@ -250,7 +280,7 @@ class Battlefield {
         int y = random.nextInt(max - min) + min;
         //creates a random number between 0 and 1 which will decide if the ship lies horizontal or vertical
         int direction = random.nextInt(2);
-        if(direction == 1){
+        if (direction == 1) {
             ship.changeDirection();
         }
         //move the ship to the coordinates
