@@ -6,7 +6,7 @@ public class Player {
     private SimpleListProperty enemyShots;
     private Position position = new Position();
 
-    public Position nextShoot() {
+    public Position nextShot() {
         int x = position.getX();
         int y = position.getY();
 

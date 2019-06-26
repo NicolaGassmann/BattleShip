@@ -31,6 +31,8 @@ class Battlefield {
         Group root = new Group();
         Scene scene = new Scene(root, 850, 600, new ImagePattern(new Image("img/water.jpg")));
         GridPane placingFiled = getPlacingField(root);
+        Button finnish = new Button();
+
         scene.getStylesheets().add(getClass().getResource("style.css").toExternalForm());
         root.getChildren().add(placingFiled);
         root.getChildren().add(getShipSettings(root));
