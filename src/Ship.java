@@ -24,13 +24,13 @@ public class Ship {
     }
 
     //moves the ship to the coordinates needed when given in x 0 to 9 and y 0 to 9
-    void moveShip(double x, double y) {
+    void moveShip(double x, double y, double gridSize) {
         x = x * 50;
         y = y * 50;
         //set position of ship if the ship is vertical
         if (direction.equals("vertical")) {
-            double xShit = 25 * (length - 1);
-            body.setX(x - xShit);
+            double i = 25 * (length - 1);
+            body.setX(x - i);
             if (length % 2 == 0) {
                 body.setY(y + 25);
             } else {
@@ -38,11 +38,11 @@ public class Ship {
             }
 
             //make sure ship stays in battlefield
-            if (body.getY() < xShit) {
-                body.setY(xShit);
+            if (body.getY() < i) {
+                body.setY(i);
             }
-            if (body.getY() > 500 - length * 50 + xShit) {
-                body.setY(500 - length * 50 + xShit);
+            if (body.getY() > gridSize - length * 50 + i) {
+                body.setY(gridSize - length * 50 + i);
             }
 
             //set position of ship if ship is horizontal
@@ -55,8 +55,8 @@ public class Ship {
             body.setY(y + 0.4);
 
             //make sure ship stays in battlefield
-            if (body.getX() > 500 - length * 50) {
-                body.setX(500 - length * 50);
+            if (body.getX() > gridSize - length * 50) {
+                body.setX(gridSize - length * 50);
             }
             if (body.getX() < 0) {
                 body.setX(0);

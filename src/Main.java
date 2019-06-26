@@ -22,7 +22,7 @@ public class Main extends Application {
         Scene startScreen = startmenu.getStartScreen("style.css", stage);
         Sound.playMainTheme();
 
-        Scene placingScreen = battlefield.getPlacingScreen();
+        //Scene placingScreen = battlefield.getPlacingScreen(6);
 
         stage.setScene(startScreen);
         stage.setResizable(false);

@@ -25,19 +25,27 @@ import static javafx.scene.paint.Color.*;
 class Battlefield {
     private Ship selectedBoat;
     private int shipCounter = 0;
-    private int maxShips = 10;
+    private int maxShips;
     private int minShips = 1;
     private List<Ship> ships = new ArrayList<>();
     private List<Ship> aiShips = new ArrayList<>();
     private VBox settings = new VBox();
+    private int fieldLength;
+    private int placeCounter = 0;
 
     //returns the ship placing screen
-    Scene getPlacingScreen() {
+    Scene getPlacingScreen(int maxShips) {
+        this.maxShips = maxShips;
+        if(maxShips <= 5){
+            fieldLength = 10;
+        }else{
+            fieldLength = 14;
+        }
         Group root = new Group();
-        Scene scene = new Scene(root, 850, 600, new ImagePattern(new Image("img/water.jpg")));
+        Scene scene = new Scene(root, fieldLength*50+350, fieldLength*50+100, new ImagePattern(new Image("img/water.jpg")));
         GridPane placingField = getPlacingField(root);
         Button finish = new Button("finish");
-        finish.relocate(600, 550);
+        finish.relocate(fieldLength*50+100, scene.getHeight()/2);
         finish.setOnAction(event -> {
             if (shipCounter >= minShips) {
                 //makes the grid small
@@ -80,7 +88,7 @@ class Battlefield {
         int x = 0;
         int y = 0;
         //adds all 100 tiles to the grid and adds the mouse events
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < Math.pow(fieldLength, 2); i++) {
             Tile tile = new Tile(x, y);
             Rectangle region = tile.getTile();
             region.setFill(rgb(0, 0, 0, 0));
@@ -92,7 +100,7 @@ class Battlefield {
                 double newX = tile.getX();
                 double newY = tile.getY();
                 if (selectedBoat != null && !selectedBoat.isPlaced()) {
-                    selectedBoat.moveShip(newX, newY);
+                    selectedBoat.moveShip(newX, newY, fieldLength*50);
                 }
             });
 
@@ -135,7 +143,7 @@ class Battlefield {
             });
             placingField.add(region, x, y);
             x++;
-            if (x > 9) {
+            if (x > fieldLength-1) {
                 x = 0;
                 y++;
             }
@@ -143,6 +151,7 @@ class Battlefield {
         return placingField;
     }
 
+    //returns the battleField where the player can shoot at
     private GridPane getBattleField(Group root) {
         GridPane battleField = new GridPane();
         battleField.setLayoutX(50);
@@ -227,7 +236,7 @@ class Battlefield {
                             if (shipCounter < maxShips) {
                                 settings.getChildren().remove(maxShipsWarning);
                                 createShip(root, tfBoatName.getText(), intBoatLength, cpBoatColor.getValue());
-                                createAndPlaceAiShip(tfBoatName.getText(), intBoatLength, cpBoatColor.getValue());
+                                createAndPlaceAiShip(root, tfBoatName.getText(), intBoatLength, cpBoatColor.getValue());
                             } else {
                                 if (!settings.getChildren().contains(maxShipsWarning)) {
                                     settings.getChildren().add(maxShipsWarning);
@@ -240,7 +249,7 @@ class Battlefield {
                         }
                     } else {
                         createShip(root, tfBoatName.getText(), intBoatLength, cpBoatColor.getValue());
-                        createAndPlaceAiShip(tfBoatName.getText(), intBoatLength, cpBoatColor.getValue());
+                        createAndPlaceAiShip(root, tfBoatName.getText(), intBoatLength, cpBoatColor.getValue());
                     }
                 }
             } else {
@@ -254,20 +263,24 @@ class Battlefield {
         boatColor.getChildren().addAll(lblBoatColor, cpBoatColor);
         settings.getChildren().addAll(boatName, boatLength, boatColor, create);
         settings.setSpacing(10);
-        settings.setLayoutX(600);
+        settings.setLayoutX(fieldLength*50+100);
         settings.setLayoutY(50);
     }
 
     //creates an AI ship and uses the placeAiShip function to place it
-    private void createAndPlaceAiShip(String name, int length, Paint paint) {
+    private void createAndPlaceAiShip(Group root, String name, int length, Paint paint) {
         //create ship with the same name, length and color as the users ship, but with isAI set true
         Ship ship = new Ship(name, length, paint);
         ship.setAiShip(true);
+        root.getChildren().add(ship.getShip());
         //ship gets placed the first time and then replaced if the position isn't correct
         placeAiShip(ship);
         for (; checkIfPlaceTaken(ship.getShip(), aiShips); ) {
             placeAiShip(ship);
+            placeCounter++;
+            System.out.println("placeCounter = " + placeCounter);
         }
+        placeCounter = 0;
         ship.setPlaced();
         ship.setPosition();
         aiShips.add(ship);
@@ -306,7 +319,7 @@ class Battlefield {
         //creates two random numbers between 0 and 9 which will be the ships coordinates
         Random random = new Random();
         int min = 0;
-        int max = 9;
+        int max = fieldLength-1;
         int x = random.nextInt(max - min) + min;
         int y = random.nextInt(max - min) + min;
         //creates a random number between 0 and 1 which will decide if the ship lies horizontal or vertical
@@ -315,6 +328,6 @@ class Battlefield {
             ship.changeDirection();
         }
         //move the ship to the coordinates
-        ship.moveShip(x, y);
+        ship.moveShip(x, y, fieldLength*50);
     }
 }
