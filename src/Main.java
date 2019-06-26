@@ -24,7 +24,7 @@ public class Main extends Application {
 
         Scene placingScreen = battlefield.getPlacingScreen();
 
-        stage.setScene(placingScreen);
+        stage.setScene(startScreen);
         stage.setResizable(false);
         stage.show();
     }

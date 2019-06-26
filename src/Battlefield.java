@@ -46,19 +46,20 @@ class Battlefield {
                 Group placingFieldGroup = new Group();
                 placingField.getStyleClass().add("myGridStyle");
                 root.getChildren().add(placingFieldGroup);
+                root.getChildren().add(getBattleField(root));
                 placingFieldGroup.getChildren().add(placingField);
-                for(Ship ship:ships){
+                for (Ship ship : ships) {
                     placingFieldGroup.getChildren().add(ship.getShip());
                     ship.getShip().toBack();
                 }
                 ScaleTransition st = new ScaleTransition(Duration.seconds(2), placingFieldGroup);
-                st.setToX(0.4);
-                st.setToY(0.4);
+                st.setToX(0.5);
+                st.setToY(0.5);
                 st.play();
 
                 TranslateTransition tt = new TranslateTransition(Duration.seconds(2), placingFieldGroup);
-                tt.setToX(425);
-                tt.setToY(-150);
+                tt.setToX(400);
+                tt.setToY(-125);
                 tt.play();
             }
         });
@@ -140,6 +141,36 @@ class Battlefield {
             }
         }
         return placingField;
+    }
+
+    private GridPane getBattleField(Group root) {
+        GridPane battleField = new GridPane();
+        battleField.setLayoutX(50);
+        battleField.setLayoutY(50);
+        int x = 0;
+        int y = 0;
+        //adds all 100 tiles to the grid and adds the mouse events
+        for (int i = 0; i < 100; i++) {
+            Tile tile = new Tile(x, y);
+            Rectangle region = tile.getTile();
+            region.setFill(rgb(0, 0, 0, 0));
+            battleField.setGridLinesVisible(true);
+            battleField.getStyleClass().add("battleField");
+
+            region.setOnMouseEntered(mouse -> {
+
+            });
+            region.setOnMouseClicked(event -> {
+            });
+
+            battleField.add(region, x, y);
+            x++;
+            if (x > 9) {
+                x = 0;
+                y++;
+            }
+        }
+        return battleField;
     }
 
     //returns the settings where the player can customize his ships

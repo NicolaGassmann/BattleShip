@@ -15,7 +15,12 @@
 
 .placingField Line {
     -fx-stroke: BLACK;
-    -fx-stroke-width: 30;
+    -fx-stroke-width: 2;
+}
+
+.battleField Line {
+    -fx-stroke: PINK;
+    -fx-stroke-width: 2;
 }
 
 .myGridStyle Line {
