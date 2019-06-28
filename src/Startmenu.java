@@ -5,17 +5,13 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
-
-import java.net.URISyntaxException;
 
 public class Startmenu {
 
     public Scene getStartScreen(String styleSheet, Stage stage) {
-        Battlefield bf = new Battlefield();
+        MainScreen mainScreen = new MainScreen(stage);
         StackPane root = new StackPane();
         Scene scene = new Scene(root, 850, 600);
 
@@ -34,7 +30,7 @@ public class Startmenu {
         logo.setFitWidth(150);
         logo.setFitHeight(150);
         Button start = new Button("Start");
-        start.setOnAction(event -> stage.setScene(bf.getPlacingScreen(15)));
+        start.setOnAction(event -> stage.setScene(mainScreen.getPlacingScreen(5)));
         Button settings = new Button("Einstellungen");
         settings.setOnAction(event -> stage.setScene(getSettings(stage)));
         Button quit = new Button("Beenden");

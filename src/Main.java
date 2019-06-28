@@ -1,11 +1,6 @@
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
-
-import java.io.File;
-import java.net.URISyntaxException;
 
 public class Main extends Application {
 
@@ -18,11 +13,11 @@ public class Main extends Application {
     public void start(Stage stage) {
 
         Startmenu startmenu = new Startmenu();
-        Battlefield battlefield = new Battlefield();
+        MainScreen mainScreen = new MainScreen(stage);
         Scene startScreen = startmenu.getStartScreen("style.css", stage);
         Sound.playMainTheme();
 
-        //Scene placingScreen = battlefield.getPlacingScreen(6);
+        //Scene placingScreen = placingField.getPlacingScreen(6);
 
         stage.setScene(startScreen);
         stage.setResizable(false);
