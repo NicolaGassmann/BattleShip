@@ -1,3 +1,4 @@
+import javafx.animation.Animation;
 import javafx.animation.ScaleTransition;
 import javafx.animation.TranslateTransition;
 import javafx.scene.Group;
@@ -37,7 +38,7 @@ public class MainScreen {
         Button finish = new Button("finish");
         finish.relocate(fieldLength * 50 + 100, scene.getHeight() / 2);
         finish.setOnAction(event -> {
-            if (placingField.shipCounter >= minShips) {
+            if (placingField.shipCounter >= minShips && placingField.selectedBoat.isPlaced()) {
                 //makes the grid small
                 root.getChildren().add(battleField.getBattleField(root));
                 root.getChildren().remove(placingField.settings);
@@ -50,12 +51,14 @@ public class MainScreen {
                     placingFieldGroup.getChildren().add(ship.getShip());
                     ship.getShip().toBack();
                 }
-                ScaleTransition st = new ScaleTransition(Duration.seconds(2), placingFieldGroup);
+                ScaleTransition st = new ScaleTransition(Duration.seconds(1), placingFieldGroup);
                 st.setToX(0.5);
                 st.setToY(0.5);
+                st.setAutoReverse(true);
+                st.setCycleCount(Animation.INDEFINITE);
                 st.play();
 
-                TranslateTransition tt = new TranslateTransition(Duration.seconds(2), placingFieldGroup);
+                TranslateTransition tt = new TranslateTransition(Duration.seconds(0.5), placingFieldGroup);
                 if(longField) {
                     tt.setToX(475);
                     tt.setToY(-150);
@@ -63,6 +66,8 @@ public class MainScreen {
                     tt.setToX(400);
                     tt.setToY(-125);
                 }
+                tt.setAutoReverse(true);
+                tt.setCycleCount(Animation.INDEFINITE);
                 tt.play();
             }
         });

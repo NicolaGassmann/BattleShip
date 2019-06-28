@@ -19,7 +19,7 @@ import static javafx.scene.paint.Color.*;
 class PlacingField {
     public int shipCounter = 0;
     public VBox settings = new VBox();
-    private Ship selectedBoat;
+    public Ship selectedBoat;
     public List<Ship> ships = new ArrayList<>();
     private List<Ship> aiShips = new ArrayList<>();
     private int placeCounter = 0;
@@ -236,8 +236,6 @@ class PlacingField {
         //create ship with the same name, length and color as the users ship, but with isAI set true
         Ship ship = new Ship(name, length, RED);
         ship.setAiShip(true);
-        root.getChildren().add(ship.getShip());
-        ship.getShip().toBack();
         //ship gets placed the first time and then replaced if the position isn't correct
         placeAiShip(ship);
         for (; checkIfPlaceTaken(ship.getShip(), aiShips); ) {
