@@ -30,7 +30,7 @@ public class Startmenu {
         logo.setFitWidth(150);
         logo.setFitHeight(150);
         Button start = new Button("Start");
-        start.setOnAction(event -> stage.setScene(mainScreen.getPlacingScreen(5)));
+        start.setOnAction(event -> stage.setScene(mainScreen.getPlacingScreen(12)));
         Button settings = new Button("Einstellungen");
         settings.setOnAction(event -> stage.setScene(getSettings(stage)));
         Button quit = new Button("Beenden");

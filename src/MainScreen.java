@@ -14,6 +14,7 @@ public class MainScreen {
     private int maxShips;
     private int minShips = 1;
     private Stage stage;
+    private boolean longField = false;
 
     public MainScreen(Stage stage){
         this.stage = stage;
@@ -26,17 +27,19 @@ public class MainScreen {
             fieldLength = 10;
         } else {
             fieldLength = 12;
+            longField = true;
         }
         PlacingField placingField = new PlacingField(fieldLength, maxShips);
+        BattleField battleField = new BattleField(fieldLength);
         Group root = new Group();
-        Scene scene = new Scene(root, fieldLength * 50 + 350, fieldLength * 50 + 100, new ImagePattern(new Image("img/water.jpg")));
+        Scene scene = new Scene(root, fieldLength * 50 + 400, fieldLength * 50 + 100, new ImagePattern(new Image("img/water.jpg")));
         GridPane placingField1 = placingField.getPlacingField(root);
         Button finish = new Button("finish");
         finish.relocate(fieldLength * 50 + 100, scene.getHeight() / 2);
         finish.setOnAction(event -> {
             if (placingField.shipCounter >= minShips) {
                 //makes the grid small
-
+                root.getChildren().add(battleField.getBattleField(root));
                 root.getChildren().remove(placingField.settings);
                 root.getChildren().remove(finish);
                 Group placingFieldGroup = new Group();
@@ -53,8 +56,13 @@ public class MainScreen {
                 st.play();
 
                 TranslateTransition tt = new TranslateTransition(Duration.seconds(2), placingFieldGroup);
-                tt.setToX(400);
-                tt.setToY(-125);
+                if(longField) {
+                    tt.setToX(475);
+                    tt.setToY(-150);
+                }else{
+                    tt.setToX(400);
+                    tt.setToY(-125);
+                }
                 tt.play();
             }
         });

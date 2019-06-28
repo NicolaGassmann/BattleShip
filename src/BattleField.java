@@ -11,7 +11,7 @@ public class BattleField {
     public BattleField(int fieldLength){
         this.fieldLength = fieldLength;
     }
-    public GridPane getPlacingField(Group root) {
+    public GridPane getBattleField(Group root) {
         GridPane battleField = new GridPane();
         battleField.setLayoutX(50);
         battleField.setLayoutY(50);
