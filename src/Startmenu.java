@@ -11,7 +11,7 @@ import javafx.stage.Stage;
 public class Startmenu {
 
     public Scene getStartScreen(String styleSheet, Stage stage) {
-        MainScreen mainScreen = new MainScreen(stage);
+        MainScreen mainScreen = new MainScreen();
         StackPane root = new StackPane();
         Scene scene = new Scene(root, 850, 600);
 
@@ -30,10 +30,10 @@ public class Startmenu {
         logo.setFitWidth(150);
         logo.setFitHeight(150);
         Button start = new Button("Start");
-        start.setOnAction(event -> stage.setScene(mainScreen.getPlacingScreen(12)));
-        Button settings = new Button("Einstellungen");
+        start.setOnAction(event -> stage.setScene(mainScreen.getPlacingScreen(false)));
+        Button settings = new Button("Options");
         settings.setOnAction(event -> stage.setScene(getSettings(stage)));
-        Button quit = new Button("Beenden");
+        Button quit = new Button("Quit");
         quit.setOnAction(event -> stage.close());
 
         start.setMinSize(120, 50);

@@ -19,7 +19,7 @@
 }
 
 .battleField Line {
-    -fx-stroke: PINK;
+    -fx-stroke: BLACK;
     -fx-stroke-width: 2;
 }
 

@@ -25,7 +25,12 @@ public class BattleField {
             battleField.setGridLinesVisible(true);
             battleField.getStyleClass().add("battleField");
 
-            region.setOnMouseEntered(mouse -> {});
+            region.setOnMouseEntered(mouse -> {
+                region.setFill(rgb(255, 0, 0, 0.5));
+            });
+            region.setOnMouseExited(event->{
+                region.setFill(rgb(0, 0, 0, 0));
+            });
             region.setOnMouseClicked(event -> {
                 if (event.getButton() == MouseButton.SECONDARY) {}
             });

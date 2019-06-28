@@ -27,13 +27,13 @@ class PlacingField {
     private int threeCounter = 0;
     private int fourCounter = 0;
     private int fiveCounter = 0;
-    private int maxSameShips = 3;
+    private int currentCounter = 0;
+    private int maxSameShips;
     private int fieldLength;
-    private int maxShips;
 
-    public PlacingField(int fieldLength, int maxShips) {
+    public PlacingField(int fieldLength, int maxSameShips) {
         this.fieldLength = fieldLength;
-        this.maxShips = maxShips;
+        this.maxSameShips = maxSameShips;
     }
 
     //returns the ship placing field as gridPane
@@ -53,9 +53,9 @@ class PlacingField {
 
             //move the ship to the current tile when the mouse enters it
             region.setOnMouseEntered(mouse -> {
-                double newX = tile.getX();
-                double newY = tile.getY();
                 if (selectedBoat != null && !selectedBoat.isPlaced()) {
+                    double newX = tile.getX();
+                    double newY = tile.getY();
                     selectedBoat.moveShip(newX, newY, fieldLength * 50);
                 }
             });
@@ -127,13 +127,15 @@ class PlacingField {
         maxShipsWarning.setTextFill(RED);
         Label shipNotPlacedWarning = new Label("place the current ship first!");
         shipNotPlacedWarning.setTextFill(RED);
-        Label maxSameShipsWarning = new Label("only place 4 of the same ship!");
+        Label maxSameShipsWarning = new Label("only place " + maxSameShips + " of the same ship +1 two sized ship!");
         maxSameShipsWarning.setTextFill(RED);
         ColorPicker cpBoatColor = new ColorPicker(BLUE);
+        cpBoatColor.setPrefWidth(255);
         TextField tfBoatName = new TextField();
-        tfBoatName.setMinWidth(200);
+        tfBoatName.setMinWidth(255);
         TextField tfBoatLength = new TextField();
-        tfBoatLength.setMinWidth(200);
+        tfBoatLength.setMinWidth(255);
+        tfBoatLength.setText("3");
         //makes sure only numbers are in the boatLength field
         tfBoatLength.textProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue.matches("\\d*")) {
@@ -141,51 +143,62 @@ class PlacingField {
             }
         });
         Button create = new Button("create");
+        create.setPrefWidth(255);
         //creates a boat when create button is pressed
         create.setOnAction(event -> {
             //checks if the length field isn't empty
             if (!tfBoatLength.getText().equals("")) {
                 boatLength.getChildren().remove(emptyWarning);
                 int intBoatLength = Integer.parseInt(tfBoatLength.getText());
-                //counts how many ships of each type there are
-                switch (intBoatLength) {
-                    case 2:
-                        twoCounter++;
-                        break;
-                    case 3:
-                        threeCounter++;
-                        break;
-                    case 4:
-                        fourCounter++;
-                        break;
-                    case 5:
-                        fiveCounter++;
-                        break;
-                }
+
                 //checks if boat length is between 2 and 5
                 if (intBoatLength < 2 || intBoatLength > 5) {
                     if (!boatLength.getChildren().contains(lengthWarning)) {
                         boatLength.getChildren().add(lengthWarning);
                     }
                 } else {
+                    //sets currentCounter to the amount of ships of the selected type
+                    switch (intBoatLength) {
+                        case 2:
+                            currentCounter = twoCounter-1;
+                            break;
+                        case 3:
+                            currentCounter = threeCounter;
+                            break;
+                        case 4:
+                            currentCounter = fourCounter;
+                            break;
+                        case 5:
+                            currentCounter = fiveCounter;
+                            break;
+                    }
                     boatLength.getChildren().remove(lengthWarning);
                     //checks if this is the first ship to be created
                     if (shipCounter != 0) {
-                        //checks if the user tries to make more than 4 of any ships
-                        if (twoCounter <= maxSameShips && threeCounter <= maxSameShips && fourCounter <= maxSameShips && fiveCounter <= maxSameShips) {
+                        //checks if the user tries to make more than the maximum of the same ship
+                        if (currentCounter < maxSameShips) {
                             settings.getChildren().remove(maxSameShipsWarning);
                             //checks if the selected boat is already placed
                             if (selectedBoat.isPlaced()) {
                                 settings.getChildren().remove(shipNotPlacedWarning);
                                 //checks if the maximum amount of ships is reached
-                                if (shipCounter < maxShips) {
-                                    settings.getChildren().remove(maxShipsWarning);
-                                    createShip(root, tfBoatName.getText(), intBoatLength, cpBoatColor.getValue());
-                                    createAndPlaceAiShip(root, tfBoatName.getText(), intBoatLength, cpBoatColor.getValue());
-                                } else {
-                                    if (!settings.getChildren().contains(maxShipsWarning)) {
-                                        settings.getChildren().add(maxShipsWarning);
-                                    }
+                                settings.getChildren().remove(maxShipsWarning);
+                                createShip(root, tfBoatName.getText(), intBoatLength, cpBoatColor.getValue());
+                                createAndPlaceAiShip(root, tfBoatName.getText(), intBoatLength, cpBoatColor.getValue());
+                                //counts how many ships of each type there are
+                                switch (intBoatLength) {
+                                    case 2:
+                                        twoCounter++;
+                                        break;
+                                    case 3:
+                                        threeCounter++;
+                                        break;
+                                    case 4:
+                                        fourCounter++;
+                                        break;
+                                    case 5:
+                                        fiveCounter++;
+                                        break;
                                 }
                             } else {
                                 if (!settings.getChildren().contains(shipNotPlacedWarning)) {
@@ -196,23 +209,25 @@ class PlacingField {
                             if (!settings.getChildren().contains(maxSameShipsWarning)) {
                                 settings.getChildren().add(maxSameShipsWarning);
                             }
-                            //sets the counter down again, so other ship types can still be placed
-                            if (twoCounter >= maxSameShips + 1) {
-                                twoCounter = maxSameShips;
-                            }
-                            if (threeCounter >= maxSameShips + 1) {
-                                threeCounter = maxSameShips;
-                            }
-                            if (fourCounter >= maxSameShips + 1) {
-                                fourCounter = maxSameShips;
-                            }
-                            if (fiveCounter >= maxSameShips + 1) {
-                                fiveCounter = maxSameShips;
-                            }
                         }
                     } else {
                         createShip(root, tfBoatName.getText(), intBoatLength, cpBoatColor.getValue());
                         createAndPlaceAiShip(root, tfBoatName.getText(), intBoatLength, cpBoatColor.getValue());
+                        //counts how many ships of each type there are
+                        switch (intBoatLength) {
+                            case 2:
+                                twoCounter++;
+                                break;
+                            case 3:
+                                threeCounter++;
+                                break;
+                            case 4:
+                                fourCounter++;
+                                break;
+                            case 5:
+                                fiveCounter++;
+                                break;
+                        }
                     }
 
                 }
