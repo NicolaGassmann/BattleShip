@@ -13,7 +13,7 @@ public class Main extends Application {
     public void start(Stage stage) {
 
         Startmenu startmenu = new Startmenu();
-        MainScreen mainScreen = new MainScreen(stage);
+        MainScreen mainScreen = new MainScreen();
         Scene startScreen = startmenu.getStartScreen("style.css", stage);
         Sound.playMainTheme();
 

@@ -21,7 +21,7 @@ class PlacingField {
     public VBox settings = new VBox();
     public Ship selectedBoat;
     public List<Ship> ships = new ArrayList<>();
-    private List<Ship> aiShips = new ArrayList<>();
+    public List<Ship> aiShips = new ArrayList<>();
     private int placeCounter = 0;
     private int twoCounter = 0;
     private int threeCounter = 0;
@@ -127,7 +127,7 @@ class PlacingField {
         maxShipsWarning.setTextFill(RED);
         Label shipNotPlacedWarning = new Label("place the current ship first!");
         shipNotPlacedWarning.setTextFill(RED);
-        Label maxSameShipsWarning = new Label("only place " + maxSameShips + " of the same ship +1 two sized ship!");
+        Label maxSameShipsWarning = new Label("you placed all of those ships, try another length!");
         maxSameShipsWarning.setTextFill(RED);
         ColorPicker cpBoatColor = new ColorPicker(BLUE);
         cpBoatColor.setPrefWidth(255);
@@ -169,7 +169,7 @@ class PlacingField {
                             currentCounter = fourCounter;
                             break;
                         case 5:
-                            currentCounter = fiveCounter;
+                            currentCounter = fiveCounter+1;
                             break;
                     }
                     boatLength.getChildren().remove(lengthWarning);
@@ -249,8 +249,9 @@ class PlacingField {
     //creates an AI ship and uses the placeAiShip function to place it
     private void createAndPlaceAiShip(Group root, String name, int length, Paint paint) {
         //create ship with the same name, length and color as the users ship, but with isAI set true
-        Ship ship = new Ship(name, length, RED);
+        Ship ship = new Ship(name, length, paint);
         ship.setAiShip(true);
+        root.getChildren().add(ship.getShip());
         //ship gets placed the first time and then replaced if the position isn't correct
         placeAiShip(ship);
         for (; checkIfPlaceTaken(ship.getShip(), aiShips); ) {
@@ -259,6 +260,7 @@ class PlacingField {
                 placeAiShip(ship);
                 placeCounter++;
             } else {
+                /*
                 System.out.println("replace all");
                 int i = 0;
                 placeAiShip(ship);
@@ -269,6 +271,8 @@ class PlacingField {
                     i++;
                     System.out.println("i = " + i);
                 }
+                */
+                break;
             }
         }
         placeCounter = 0;

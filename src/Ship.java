@@ -13,7 +13,7 @@ public class Ship {
 
     Ship(String name, int length, Paint fill) {
         this.length = length;
-        body = new Rectangle(length * 50, 50, fill);
+        body = new Rectangle(length * 50, 49, fill);
         body.relocate(50, 50);
         hitBox = new Rectangle(body.getWidth() + 50, body.getHeight() + 50);
         hitBox.relocate(25, 25);

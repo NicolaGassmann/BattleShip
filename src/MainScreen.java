@@ -36,7 +36,7 @@ public class MainScreen {
         Group root = new Group();
         Scene scene = new Scene(root, fieldLength * 50 + 400, fieldLength * 50 + 100, new ImagePattern(new Image("img/water.jpg")));
         GridPane placingField1 = placingField.getPlacingField(root);
-        GridPane battleField1 = battleField.getBattleField(root);
+        GridPane battleField1 = battleField.getBattleField(root, placingField.aiShips);
         Label minShipOrNotPlacedWarning = new Label("you need at least one ship to start and make sure the currently selected ship is placed!");
         minShipOrNotPlacedWarning.setTextFill(RED);
         minShipOrNotPlacedWarning.relocate(50, scene.getHeight()-50);
