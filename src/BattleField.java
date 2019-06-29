@@ -1,12 +1,13 @@
 import javafx.scene.Group;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 
 import java.util.List;
 
-import static javafx.scene.paint.Color.rgb;
+import static javafx.scene.paint.Color.*;
 
 public class BattleField {
     private int fieldLength;
@@ -30,17 +31,26 @@ public class BattleField {
             battleField.getStyleClass().add("battleField");
 
             region.setOnMouseEntered(mouse -> {
-                region.setFill(rgb(255, 0, 0, 0.5));
+                //region.setFill(rgb(255, 0, 0, 0.5));
             });
             region.setOnMouseExited(event -> {
-                region.setFill(rgb(0, 0, 0, 0));
+                //region.setFill(rgb(0, 0 ,0, 0));
             });
             region.setOnMouseClicked(event -> {
                 if (event.getButton() == MouseButton.PRIMARY) {
-                    if(checkIfShipHit(region, aiShips)){
-                        System.out.println("hit");
-                    }else{
-                        System.out.println("no hit");
+                    if (region.getFill().equals(rgb(0, 0, 0, 0))) {
+                        for (Ship aiShip : aiShips) {
+                            if (checkIfShipHit(region, aiShip)) {
+                                region.setFill(rgb(255, 0, 0, 0.5));
+                                aiShip.isHit();
+                                if(aiShip.isDestroyed()){
+                                    System.out.println("You destroyed your opponents ship" + aiShip.getName() + "!");
+                                }
+                            } else {
+                                region.setFill(rgb(100, 100, 100, 0.5));
+
+                            }
+                        }
                     }
                 }
             });
@@ -54,14 +64,12 @@ public class BattleField {
         return battleField;
     }
 
-    private boolean checkIfShipHit(Shape block, List<Ship> ships) {
+    private boolean checkIfShipHit(Shape block, Ship ship) {
         boolean collisionDetected = false;
-        for (Ship ship : ships) {
-            if (ship.getShip() != block) {
-                Shape intersect = Shape.intersect(block, ship.getShip());
-                if (intersect.getBoundsInLocal().getWidth() != -1) {
-                    collisionDetected = true;
-                }
+        if (ship.getShip() != block) {
+            Shape intersect = Shape.intersect(block, ship.getShip());
+            if (intersect.getBoundsInLocal().getWidth() != -1) {
+                collisionDetected = true;
             }
         }
         return collisionDetected;

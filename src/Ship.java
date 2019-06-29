@@ -9,18 +9,19 @@ public class Ship {
     private int length;
     private String direction;
     private boolean isPlaced;
-    private boolean isAiShip;
+    private int hits;
+    private boolean isDestroyed;
 
     Ship(String name, int length, Paint fill) {
         this.length = length;
-        body = new Rectangle(length * 50, 49, fill);
-        body.relocate(50, 50);
+        body = new Rectangle(length * 50, 48, fill);
+        body.relocate(50, 51);
         hitBox = new Rectangle(body.getWidth() + 50, body.getHeight() + 50);
         hitBox.relocate(25, 25);
         isPlaced = false;
-        isAiShip = false;
+        isDestroyed = false;
         this.direction = "horizontal";
-        this.name = name;
+        this.name = " " + name;
     }
 
     //moves the ship to the coordinates needed when given in x 0 to 9 and y 0 to 9
@@ -161,15 +162,18 @@ public class Ship {
         isPlaced = true;
     }
 
-    String getPosition(){
-        return position;
-    }
-
     private boolean between(int value, int minValue, int maxValue) {
         return value >= minValue && value <= maxValue;
     }
 
-    public void setAiShip(boolean aiShip) {
-        isAiShip = aiShip;
+    public void isHit(){
+        hits++;
+        if(hits >= length){
+            isDestroyed = true;
+        }
+    }
+
+    public boolean isDestroyed(){
+        return isDestroyed;
     }
 }

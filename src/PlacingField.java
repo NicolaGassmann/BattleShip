@@ -22,6 +22,7 @@ class PlacingField {
     public Ship selectedBoat;
     public List<Ship> ships = new ArrayList<>();
     public List<Ship> aiShips = new ArrayList<>();
+    private List<Tile> tiles = new ArrayList<>();
     private int placeCounter = 0;
     private int twoCounter = 0;
     private int threeCounter = 0;
@@ -46,6 +47,7 @@ class PlacingField {
         //adds all 100 tiles to the grid and adds the mouse events
         for (int i = 0; i < Math.pow(fieldLength, 2); i++) {
             Tile tile = new Tile(x, y);
+            tiles.add(tile);
             Rectangle region = tile.getTile();
             region.setFill(rgb(0, 0, 0, 0));
             placingField.setGridLinesVisible(true);
@@ -250,7 +252,6 @@ class PlacingField {
     private void createAndPlaceAiShip(Group root, String name, int length, Paint paint) {
         //create ship with the same name, length and color as the users ship, but with isAI set true
         Ship ship = new Ship(name, length, paint);
-        ship.setAiShip(true);
         root.getChildren().add(ship.getShip());
         //ship gets placed the first time and then replaced if the position isn't correct
         placeAiShip(ship);
@@ -324,5 +325,9 @@ class PlacingField {
         }
         //move the ship to the coordinates
         ship.moveShip(x, y, fieldLength * 50);
+    }
+
+    public List<Tile> getTiles(){
+        return tiles;
     }
 }
