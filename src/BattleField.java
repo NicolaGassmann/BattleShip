@@ -4,9 +4,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 import static javafx.scene.paint.Color.*;
 
@@ -16,7 +14,7 @@ public class BattleField {
     private Ship selectedPlayerShip;
     private List<Ship> playerShips = new ArrayList<>();
     private List<Tile> tiles = new ArrayList<>();
-    private List<int[]> shotCords = new ArrayList<>();
+    private Set<Position> shotPosition = new HashSet<>();
 
     public BattleField(int fieldLength) {
         this.fieldLength = fieldLength;
@@ -93,19 +91,18 @@ public class BattleField {
         //creates two random numbers between 0 and 9 which will be the shots coordinates
         Random random = new Random();
         int min = 0;
-        int max = fieldLength - 1;
+        int max = fieldLength;
         int x = random.nextInt(max - min) + min;
         int y = random.nextInt(max - min) + min;
-        int[] cords = {x, y};
-        for(;shotCords.contains(cords);){
-            System.out.println("new cords");
+        Position position = new Position(x, y);
+        while(shotPosition.contains(position)){
             x = random.nextInt(max - min) + min;
             y = random.nextInt(max - min) + min;
-            cords = new int[]{x, y};
+            position = new Position(x, y);
         }
-        shotCords.add(cords);
+        shotPosition.add(position);
         for(Tile tile:tiles){
-            if(tile.getPosition().getX() == x && tile.getPosition().getY() == y){
+            if(position.equals(tile.getPosition())){
                 for (Ship playerShip : playerShips) {
                     if (checkIfShipHit(tile.getTile(), playerShip)) {
                         selectedPlayerShip = playerShip;

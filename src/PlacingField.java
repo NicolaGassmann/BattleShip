@@ -268,10 +268,8 @@ class PlacingField {
     //creates an AI ship and uses the placeShip function to place it
     private void createAndPlaceAiShip(Group root, String name, int length, Paint paint) {
         //create ship with the same name, length and color as the users ship, but with isAI set true
-        Ship ship = new Ship(name, length, RED);
+        Ship ship = new Ship(name, length, paint);
         placeShip(ship, aiShips);
-        root.getChildren().add(ship.getShip());
-        ship.getShip().toBack();
     }
 
     //creates a ship and adds it to the given group and selects the boat
@@ -304,7 +302,7 @@ class PlacingField {
         //creates two random numbers between 0 and 9 which will be the playerShips coordinates
         Random random = new Random();
         int min = 0;
-        int max = fieldLength-1;
+        int max = fieldLength;
         int x = random.nextInt(max - min) + min;
         int y = random.nextInt(max - min) + min;
         //creates a random number between 0 and 1 which will decide if the ship lies horizontal or vertical
@@ -314,7 +312,7 @@ class PlacingField {
         }
         //move the ship to the coordinates
         ship.moveShip(x, y, fieldLength * 50);
-        for (; checkIfPlaceTaken(selectedShip.getShip(), ships); ) {
+        for (; checkIfPlaceTaken(ship.getShip(), ships); ) {
             //if the placing of the current failed more than 100000 times it replaces all ships
             if (placeCounter < 10000) {
                 //creates two random numbers between 0 and 9 which will be the playerShips coordinates
@@ -346,9 +344,9 @@ class PlacingField {
             }
         }
         placeCounter = 0;
-        selectedShip.placeHitBox();
-        selectedShip.setPlaced();
-        selectedShip.setPosition();
+        ship.placeHitBox();
+        ship.setPlaced();
+        ship.setPosition();
         ships.add(ship);
     }
 
@@ -379,7 +377,7 @@ class PlacingField {
             }
             createShip(root, "", length, paint);
             playerShips.remove(selectedShip);
-            //createAndPlaceAiShip(root, "", length, paint);
+            createAndPlaceAiShip(root, "", length, paint);
             placeShip(selectedShip, playerShips);
         }
     }
@@ -388,7 +386,7 @@ class PlacingField {
     public void deleteShip(Group root, Ship ship) {
         int removingShip = playerShips.indexOf(ship);
         root.getChildren().remove(ship.getShip());
-        //aiShips.remove(removingShip);
+        aiShips.remove(removingShip);
         playerShips.remove(ship);
         shipCounter--;
     }

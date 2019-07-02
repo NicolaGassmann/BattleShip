@@ -25,7 +25,7 @@ public class MainScreen {
     Scene getPlacingScreen(boolean longField) {
         if (!longField) {
             fieldLength = 10;
-            maxSameShips = 1;
+            maxSameShips = 2;
         } else {
             fieldLength = 12;
             maxSameShips = 3;
