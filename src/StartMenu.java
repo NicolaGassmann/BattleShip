@@ -8,14 +8,14 @@ import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
-public class Startmenu {
+public class StartMenu {
 
-    public Scene getStartScreen(String styleSheet, Stage stage) {
+    public Scene getStartScreen() {
         MainScreen mainScreen = new MainScreen();
         StackPane root = new StackPane();
         Scene scene = new Scene(root, 900, 600);
 
-        root.getStylesheets().add(getClass().getResource(styleSheet).toExternalForm());
+        root.getStylesheets().add(getClass().getResource("style.css").toExternalForm());
 
         Rectangle glass = new Rectangle(200, 400);
         glass.setStyle("-fx-fill: white;");
@@ -30,11 +30,11 @@ public class Startmenu {
         logo.setFitWidth(150);
         logo.setFitHeight(150);
         Button start = new Button("Start");
-        start.setOnAction(event -> stage.setScene(mainScreen.getPlacingScreen(false)));
+        start.setOnAction(event -> NavController.setScene(mainScreen.getPlacingScreen(false)));
         Button settings = new Button("Options");
-        settings.setOnAction(event -> stage.setScene(getSettings(stage)));
+        settings.setOnAction(event -> NavController.setScene(getSettings()));
         Button quit = new Button("Quit");
-        quit.setOnAction(event -> stage.close());
+        quit.setOnAction(event -> NavController.getStage().close());
 
         start.setMinSize(120, 50);
         settings.setMinSize(120, 50);
@@ -49,14 +49,14 @@ public class Startmenu {
         return scene;
     }
 
-    public Scene getSettings(Stage stage) {
+    public Scene getSettings() {
         BorderPane root = new BorderPane();
         Scene scene = new Scene(root, 850, 600);
 
         root.getStylesheets().add(getClass().getResource("style.css").toExternalForm());
 
         Button back = new Button("Zurück");
-        back.setOnAction(event -> stage.setScene(getStartScreen("style.css", stage)));
+        back.setOnAction(event -> NavController.setScene(getStartScreen()));
         back.setMinSize(120, 50);
 
 

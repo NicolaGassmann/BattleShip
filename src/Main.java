@@ -12,15 +12,11 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) {
 
-        Startmenu startmenu = new Startmenu();
-        MainScreen mainScreen = new MainScreen();
-        Scene startScreen = startmenu.getStartScreen("style.css", stage);
+        StartMenu startmenu = new StartMenu();
+        Scene startScreen = startmenu.getStartScreen();
         Sound.playMainTheme();
-
-        //Scene placingScreen = placingField.getPlacingScreen(6);
-
-        stage.setScene(startScreen);
-        stage.setResizable(false);
-        stage.show();
+        NavController.setScene(startScreen);
+        NavController.getStage().setResizable(false);
+        NavController.getStage().show();
     }
 }

@@ -19,7 +19,7 @@ public class MainScreen {
     private Stage stage;
     private boolean longField;
 
-    public MainScreen(){ }
+    public MainScreen(){}
 
     //returns the ship placing screen
     Scene getPlacingScreen(boolean longField) {
@@ -30,28 +30,26 @@ public class MainScreen {
             fieldLength = 12;
             maxSameShips = 3;
         }
-        PlacingField placingField = new PlacingField(fieldLength, maxSameShips);
-        BattleField battleField = new BattleField(fieldLength);
         Group root = new Group();
+        PlacingScreen placingScreen = new PlacingScreen(root, fieldLength, maxSameShips);
+        BattleScreen battleScreen = new BattleScreen(root, fieldLength, placingScreen.getPlayerShips(), placingScreen.getAiShips(), placingScreen.getTiles());
         Scene scene = new Scene(root, fieldLength * 50 + 400, fieldLength * 50 + 100, new ImagePattern(new Image("img/water.jpg")));
-        GridPane placingField1 = placingField.getPlacingField(root);
-        GridPane battleField1 = battleField.getBattleField(root, placingField.getPlayerShips(), placingField.getAiShips(), placingField.getTiles());
+        GridPane placingField = placingScreen.getPlacingField();
         Label minShipOrNotPlacedWarning = new Label("you need at least one ship to start and make sure the currently selected ship is placed!");
         minShipOrNotPlacedWarning.setTextFill(RED);
         minShipOrNotPlacedWarning.relocate(50, scene.getHeight()-50);
         Button finish = new Button("finish");
         finish.relocate(fieldLength * 50 + 100, scene.getHeight() / 2);
         finish.setOnAction(event -> {
-            if (placingField.shipCounter >= minShips && placingField.selectedShip.isPlaced()) {
+            if (placingScreen.shipCounter >= minShips && placingScreen.selectedShip.isPlaced()) {
                 root.getChildren().remove(minShipOrNotPlacedWarning);
-                root.getChildren().add(battleField1);
-                root.getChildren().remove(placingField.settings);
+                root.getChildren().remove(placingScreen.settings);
                 root.getChildren().remove(finish);
                 Group placingFieldGroup = new Group();
-                placingField1.getStyleClass().add("myGridStyle");
+                placingField.getStyleClass().add("myGridStyle");
                 root.getChildren().add(placingFieldGroup);
-                placingFieldGroup.getChildren().add(placingField1);
-                for (Ship ship : placingField.playerShips) {
+                placingFieldGroup.getChildren().add(placingField);
+                for (Ship ship : placingScreen.playerShips) {
                     placingFieldGroup.getChildren().add(ship.getShip());
                     ship.getShip().toBack();
                 }
@@ -77,9 +75,9 @@ public class MainScreen {
         });
         root.getChildren().add(finish);
         scene.getStylesheets().add(getClass().getResource("style.css").toExternalForm());
-        root.getChildren().add(placingField1);
-        placingField.createShipSettings(root);
-        root.getChildren().add(placingField.settings);
+        root.getChildren().add(placingField);
+        placingScreen.createShipSettings();
+        root.getChildren().add(placingScreen.settings);
 
         return scene;
     }

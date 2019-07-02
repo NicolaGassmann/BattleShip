@@ -8,22 +8,30 @@ import java.util.*;
 
 import static javafx.scene.paint.Color.*;
 
-public class BattleField {
+public class BattleScreen {
     private int fieldLength;
     private Ship selectedAiShip;
     private Ship selectedPlayerShip;
-    private List<Ship> playerShips = new ArrayList<>();
-    private List<Tile> tiles = new ArrayList<>();
+    private List<Ship> playerShips;
+    private List<Ship>  aiShips;
+    private List<Tile> tiles;
     private Set<Position> shotPosition = new HashSet<>();
+    private int aliveAiShips;
+    private int alivePlayerShips;
+    private Group root;
 
-    public BattleField(int fieldLength) {
+    public BattleScreen(Group root, int fieldLength, List<Ship> ships, List<Ship> aiShips, List<Tile> tiles) {
         this.fieldLength = fieldLength;
-    }
-
-    public GridPane getBattleField(Group root,List<Ship> ships, List<Ship> aiShips, List<Tile> tiles) {
-        GridPane battleField = new GridPane();
+        this.root = root;
         this.tiles = tiles;
         this.playerShips = ships;
+        this.aiShips = aiShips;
+        getBattleField();
+    }
+
+    public void getBattleField() {
+        GridPane battleField = new GridPane();
+        root.getChildren().add(battleField);
         battleField.setLayoutX(50);
         battleField.setLayoutY(50);
         int x = 0;
@@ -50,16 +58,8 @@ public class BattleField {
                                 selectedAiShip = aiShip;
                             }
                         }
+                        shoot(region, selectedAiShip, true);
                         aiShoot();
-                        if (selectedAiShip != null) {
-                            region.setFill(rgb(255, 0, 0, 0.5));
-                            selectedAiShip.isHit();
-                            if (selectedAiShip.isDestroyed()) {
-                                System.out.println("You destroyed your opponents ship" + selectedAiShip.getName() + "!");
-                            }
-                        } else {
-                            region.setFill(rgb(100, 100, 100, 0.5));
-                        }
                         selectedAiShip = null;
                     }
                 }
@@ -72,8 +72,6 @@ public class BattleField {
             }
 
         }
-        return battleField;
-
     }
 
     private boolean checkIfShipHit(Shape block, Ship ship) {
@@ -95,30 +93,60 @@ public class BattleField {
         int x = random.nextInt(max - min) + min;
         int y = random.nextInt(max - min) + min;
         Position position = new Position(x, y);
-        while(shotPosition.contains(position)){
+        while (shotPosition.contains(position)) {
             x = random.nextInt(max - min) + min;
             y = random.nextInt(max - min) + min;
             position = new Position(x, y);
         }
         shotPosition.add(position);
-        for(Tile tile:tiles){
-            if(position.equals(tile.getPosition())){
+        for (Tile tile : tiles) {
+            if (position.equals(tile.getPosition())) {
                 for (Ship playerShip : playerShips) {
                     if (checkIfShipHit(tile.getTile(), playerShip)) {
                         selectedPlayerShip = playerShip;
                     }
                 }
-                if (selectedPlayerShip != null) {
-                    tile.getTile().setFill(rgb(255, 0, 0, 0.5));
-                    selectedPlayerShip.isHit();
-                    if (selectedPlayerShip.isDestroyed()) {
-                        System.out.println("Your opponent destroyed your ship" + selectedPlayerShip.getName() + "!");
-                    }
-                } else {
-                    tile.getTile().setFill(rgb(100, 100, 100, 0.5));
-                }
+                shoot(tile.getTile(), selectedPlayerShip, false);
                 selectedPlayerShip = null;
             }
+        }
+    }
+
+    private void shoot(Rectangle tile, Ship selectedShip, boolean player) {
+        if (selectedShip != null) {
+            tile.setFill(rgb(255, 0, 0, 0.5));
+            selectedShip.isHit();
+            if (selectedShip.isDestroyed()) {
+                if(player) {
+                    System.out.println("You destroyed your opponents ship" + selectedShip.getName() + "!");
+                    aliveAiShips = 0;
+                    for (Ship ship : aiShips) {
+                        if (!ship.isDestroyed()) {
+                            aliveAiShips++;
+                        }
+                    }
+                    if (aliveAiShips == 0) {
+                        WinningScreen winningScreen = new WinningScreen();
+                        NavController.setScene(winningScreen.getWinningScreen("player"));
+                    }
+                    System.out.println("You need to destroy " + aliveAiShips + " more ships to win.");
+                }else{
+                    System.out.println("Your opponent destroyed your ship" + selectedShip.getName() + "!");
+                    alivePlayerShips = 0;
+                    for (Ship ship : playerShips) {
+                        if (!ship.isDestroyed()) {
+                            alivePlayerShips++;
+                        }
+                    }
+                    if (alivePlayerShips == 0) {
+                        WinningScreen winningScreen = new WinningScreen();
+                        NavController.setScene(winningScreen.getWinningScreen("ai"));
+                    }
+                    System.out.println("You have " + alivePlayerShips + " ships left.");
+                }
+            }
+        } else {
+            tile.setFill(rgb(100, 100, 100, 0.5));
         }
     }
 }

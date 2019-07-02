@@ -10,13 +10,14 @@ import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 import static javafx.scene.paint.Color.*;
 
-class PlacingField {
+class PlacingScreen {
     public int shipCounter = 0;
     public VBox settings = new VBox();
     public Ship selectedShip;
@@ -31,14 +32,16 @@ class PlacingField {
     private int currentCounter = 0;
     private int maxSameShips;
     private int fieldLength;
+    private Group root;
 
-    public PlacingField(int fieldLength, int maxSameShips) {
+    public PlacingScreen(Group root, int fieldLength, int maxSameShips) {
         this.fieldLength = fieldLength;
         this.maxSameShips = maxSameShips;
+        this.root = root;
     }
 
     //returns the ship placing field as gridPane
-    public GridPane getPlacingField(Group root) {
+    public GridPane getPlacingField() {
         GridPane placingField = new GridPane();
         placingField.setLayoutX(50);
         placingField.setLayoutY(50);
@@ -90,7 +93,7 @@ class PlacingField {
                         }
                         //if there was a ship found shipsGetsDeleted will be true and that ship gets removed
                         if (shipGetsDeleted) {
-                            deleteShip(root, selectedShip);
+                            deleteShip(selectedShip);
                         }
                     }
                 }
@@ -106,7 +109,7 @@ class PlacingField {
     }
 
     //returns the settings where the player can customize his ships
-    public void createShipSettings(Group root) {
+    public void createShipSettings() {
         settings = new VBox();
         VBox boatName = new VBox();
         VBox boatLength = new VBox();
@@ -184,7 +187,7 @@ class PlacingField {
                                 //checks if the maximum amount of playerShips is reached
                                 settings.getChildren().remove(maxShipsWarning);
                                 createShip(root, tfBoatName.getText(), intBoatLength, cpBoatColor.getValue());
-                                createAndPlaceAiShip(root, tfBoatName.getText(), intBoatLength, cpBoatColor.getValue());
+                                createAndPlaceAiShip(tfBoatName.getText(), intBoatLength, cpBoatColor.getValue());
                                 //counts how many playerShips of each type there are
                                 switch (intBoatLength) {
                                     case 2:
@@ -212,7 +215,7 @@ class PlacingField {
                         }
                     } else {
                         createShip(root, tfBoatName.getText(), intBoatLength, cpBoatColor.getValue());
-                        createAndPlaceAiShip(root, tfBoatName.getText(), intBoatLength, cpBoatColor.getValue());
+                        createAndPlaceAiShip(tfBoatName.getText(), intBoatLength, cpBoatColor.getValue());
                         //counts how many playerShips of each type there are
                         switch (intBoatLength) {
                             case 2:
@@ -243,14 +246,14 @@ class PlacingField {
         generateShips.setOnAction(event -> {
             if (playerShips.isEmpty()) {
                 settings.getChildren().remove(shipsAlreadyPlacedWarning);
-                generateShips(root, cpBoatColor.getValue());
+                generateShips(cpBoatColor.getValue());
             } else {
                 if (!settings.getChildren().contains(shipsAlreadyPlacedWarning)) {
                     settings.getChildren().add(shipsAlreadyPlacedWarning);
                 }
                 int count = playerShips.size();
                 for(int i = 0; i < count; i++){
-                    deleteShip(root, playerShips.get(0));
+                    deleteShip(playerShips.get(0));
                 }
 
             }
@@ -266,7 +269,7 @@ class PlacingField {
     }
 
     //creates an AI ship and uses the placeShip function to place it
-    private void createAndPlaceAiShip(Group root, String name, int length, Paint paint) {
+    private void createAndPlaceAiShip(String name, int length, Paint paint) {
         //create ship with the same name, length and color as the users ship, but with isAI set true
         Ship ship = new Ship(name, length, paint);
         placeShip(ship, aiShips);
@@ -363,7 +366,7 @@ class PlacingField {
     }
 
     //generates all ships and positions them
-    private void generateShips(Group root, Paint paint) {
+    private void generateShips(Paint paint) {
         int length;
         for (int i = 0; i < maxSameShips * 4; i++) {
             if (i < maxSameShips + 1) {
@@ -377,13 +380,13 @@ class PlacingField {
             }
             createShip(root, "", length, paint);
             playerShips.remove(selectedShip);
-            createAndPlaceAiShip(root, "", length, paint);
+            createAndPlaceAiShip("", length, paint);
             placeShip(selectedShip, playerShips);
         }
     }
 
     //deletes a ship and it's AI brother
-    public void deleteShip(Group root, Ship ship) {
+    public void deleteShip(Ship ship) {
         int removingShip = playerShips.indexOf(ship);
         root.getChildren().remove(ship.getShip());
         aiShips.remove(removingShip);
