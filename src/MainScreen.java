@@ -1,4 +1,3 @@
-import javafx.animation.Animation;
 import javafx.animation.ScaleTransition;
 import javafx.animation.TranslateTransition;
 import javafx.scene.Group;
@@ -26,7 +25,7 @@ public class MainScreen {
     Scene getPlacingScreen(boolean longField) {
         if (!longField) {
             fieldLength = 10;
-            maxSameShips = 2;
+            maxSameShips = 1;
         } else {
             fieldLength = 12;
             maxSameShips = 3;
@@ -36,14 +35,14 @@ public class MainScreen {
         Group root = new Group();
         Scene scene = new Scene(root, fieldLength * 50 + 400, fieldLength * 50 + 100, new ImagePattern(new Image("img/water.jpg")));
         GridPane placingField1 = placingField.getPlacingField(root);
-        GridPane battleField1 = battleField.getBattleField(root, placingField.aiShips);
+        GridPane battleField1 = battleField.getBattleField(root, placingField.getPlayerShips(), placingField.getAiShips(), placingField.getTiles());
         Label minShipOrNotPlacedWarning = new Label("you need at least one ship to start and make sure the currently selected ship is placed!");
         minShipOrNotPlacedWarning.setTextFill(RED);
         minShipOrNotPlacedWarning.relocate(50, scene.getHeight()-50);
         Button finish = new Button("finish");
         finish.relocate(fieldLength * 50 + 100, scene.getHeight() / 2);
         finish.setOnAction(event -> {
-            if (placingField.shipCounter >= minShips && placingField.selectedBoat.isPlaced()) {
+            if (placingField.shipCounter >= minShips && placingField.selectedShip.isPlaced()) {
                 root.getChildren().remove(minShipOrNotPlacedWarning);
                 root.getChildren().add(battleField1);
                 root.getChildren().remove(placingField.settings);
@@ -52,7 +51,7 @@ public class MainScreen {
                 placingField1.getStyleClass().add("myGridStyle");
                 root.getChildren().add(placingFieldGroup);
                 placingFieldGroup.getChildren().add(placingField1);
-                for (Ship ship : placingField.ships) {
+                for (Ship ship : placingField.playerShips) {
                     placingFieldGroup.getChildren().add(ship.getShip());
                     ship.getShip().toBack();
                 }

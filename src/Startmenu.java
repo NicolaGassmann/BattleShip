@@ -13,7 +13,7 @@ public class Startmenu {
     public Scene getStartScreen(String styleSheet, Stage stage) {
         MainScreen mainScreen = new MainScreen();
         StackPane root = new StackPane();
-        Scene scene = new Scene(root, 850, 600);
+        Scene scene = new Scene(root, 900, 600);
 
         root.getStylesheets().add(getClass().getResource(styleSheet).toExternalForm());
 

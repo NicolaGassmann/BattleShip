@@ -20,4 +20,8 @@ public class Tile {
     public double getY(){
         return position.getY();
     }
+
+    public Position getPosition() {
+        return position;
+    }
 }

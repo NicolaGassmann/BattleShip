@@ -21,7 +21,11 @@ public class Ship {
         isPlaced = false;
         isDestroyed = false;
         this.direction = "horizontal";
-        this.name = " " + name;
+        if(!name.equals("")) {
+            this.name = " " + name;
+        }else{
+            this.name = "";
+        }
     }
 
     //moves the ship to the coordinates needed when given in x 0 to 9 and y 0 to 9
@@ -162,10 +166,12 @@ public class Ship {
         isPlaced = true;
     }
 
+    //returns true if the first value is equal or between the other values
     private boolean between(int value, int minValue, int maxValue) {
         return value >= minValue && value <= maxValue;
     }
 
+    //counts up in the hitCounter and checks if the ship is destroyed
     public void isHit(){
         hits++;
         if(hits >= length){
