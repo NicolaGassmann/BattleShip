@@ -18,16 +18,11 @@ import java.util.Random;
 import static javafx.scene.paint.Color.*;
 
 class PlacingScreen {
-    public int shipCounter = 0;
     public VBox settings = new VBox();
     public Ship selectedShip;
     public List<Ship> playerShips = new ArrayList<>();
     private List<Ship> aiShips = new ArrayList<>();
     private List<Tile> tiles = new ArrayList<>();
-    private int twoCounter = 0;
-    private int threeCounter = 0;
-    private int fourCounter = 0;
-    private int fiveCounter = 0;
     private int maxSameShips;
     private int fieldLength;
     private Group root;
@@ -176,21 +171,21 @@ class PlacingScreen {
                     int currentCounter = 0;
                     switch (intBoatLength) {
                         case 2:
-                            currentCounter = twoCounter - 1;
+                            currentCounter = ShipCounter.getTwoTypes()- 1;
                             break;
                         case 3:
-                            currentCounter = threeCounter;
+                            currentCounter = ShipCounter.getThreeTypes();
                             break;
                         case 4:
-                            currentCounter = fourCounter;
+                            currentCounter = ShipCounter.getFourTypes();
                             break;
                         case 5:
-                            currentCounter = fiveCounter + 1;
+                            currentCounter = ShipCounter.getFiveTypes() + 1;
                             break;
                     }
                     boatLength.getChildren().remove(lengthWarning);
                     //checks if this is the first ship to be created
-                    if (twoCounter != 0 && threeCounter != 0 && fourCounter != 0 && fiveCounter != 0) {
+                    if (ShipCounter.getAllShips() > 0) {
                         //checks if the user tries to make more than the maximum of the same ship
                         if (currentCounter < maxSameShips) {
                             settings.getChildren().remove(maxSameShipsWarning);
@@ -389,58 +384,57 @@ class PlacingScreen {
     }
 
     //deletes and recreates all ai ships in a different place
-    public void replaceAiShips() {
+    private void replaceAiShips() {
         aiShips.clear();
-        for (int i = 0; i < twoCounter; i++) {
+        for (int i = 0; i < ShipCounter.getTwoTypes(); i++) {
             createAndPlaceAiShip("", 2, BLACK);
         }
-        for (int i = 0; i < threeCounter; i++) {
+        for (int i = 0; i < ShipCounter.getThreeTypes(); i++) {
             createAndPlaceAiShip("", 3, BLACK);
         }
-        for (int i = 0; i < fourCounter; i++) {
+        for (int i = 0; i < ShipCounter.getFourTypes(); i++) {
             createAndPlaceAiShip("", 4, BLACK);
         }
-        for (int i = 0; i < fiveCounter; i++) {
+        for (int i = 0; i < ShipCounter.getFiveTypes(); i++) {
             createAndPlaceAiShip("", 5, BLACK);
         }
     }
 
     //deletes a ship and it's AI brother
-    public void deleteShip(Ship ship) {
+    private void deleteShip(Ship ship) {
         int removingShip = playerShips.indexOf(ship);
         root.getChildren().remove(ship.getShip());
         aiShips.remove(removingShip);
         playerShips.remove(ship);
         switch (ship.getLength()) {
             case 2:
-                twoCounter--;
+                ShipCounter.twoDown();
                 break;
             case 3:
-                threeCounter--;
+                ShipCounter.threeDown();
                 break;
             case 4:
-                fourCounter--;
+                ShipCounter.fourDown();
                 break;
             case 5:
-                fiveCounter--;
+                ShipCounter.fiveDown();
                 break;
         }
-        shipCounter--;
     }
 
-    public void countShip(int length) {
+    private void countShip(int length) {
         switch (length) {
             case 2:
-                twoCounter++;
+                ShipCounter.twoUp();
                 break;
             case 3:
-                threeCounter++;
+                ShipCounter.threeUp();
                 break;
             case 4:
-                fourCounter++;
+                ShipCounter.fourUp();
                 break;
             case 5:
-                fiveCounter++;
+                ShipCounter.fiveUp();
                 break;
         }
     }

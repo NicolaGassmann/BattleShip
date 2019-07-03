@@ -1,13 +1,13 @@
 import javafx.animation.ScaleTransition;
 import javafx.animation.TranslateTransition;
 import javafx.scene.Group;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.ImagePattern;
-import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import static javafx.scene.paint.Color.RED;
@@ -19,7 +19,7 @@ public class MainScreen {
     public MainScreen(){}
 
     //returns the ship placing screen
-    Scene getPlacingScreen(boolean longField) {
+    Parent getPlacingScreen(boolean longField) {
         int maxSameShips;
         if (!longField) {
             fieldLength = 10;
@@ -29,17 +29,17 @@ public class MainScreen {
             maxSameShips = 3;
         }
         Group root = new Group();
+        root.getStyleClass().add("mainScreen");
         PlacingScreen placingScreen = new PlacingScreen(root, fieldLength, maxSameShips);
-        Scene scene = new Scene(root, fieldLength * 50 + 400, fieldLength * 50 + 100, new ImagePattern(new Image("img/water.jpg")));
         GridPane placingField = placingScreen.getPlacingField();
         Label minShipOrNotPlacedWarning = new Label("you need at least one ship to start and make sure the currently selected ship is placed!");
         minShipOrNotPlacedWarning.setTextFill(RED);
-        minShipOrNotPlacedWarning.relocate(50, scene.getHeight()-50);
+        minShipOrNotPlacedWarning.relocate(50, NavController.getScene().getHeight()-50);
         Button finish = new Button("finish");
-        finish.relocate(fieldLength * 50 + 100, scene.getHeight()-75);
+        finish.relocate(fieldLength * 50 + 100, NavController.getScene().getHeight()-75);
         finish.setPrefWidth(255);
         finish.setOnAction(event -> {
-            if (placingScreen.shipCounter >= minShips && placingScreen.selectedShip.isPlaced()) {
+            if (ShipCounter.getAllShips() >= minShips && placingScreen.selectedShip.isPlaced()) {
                 Sound.stopMusic();
                 Sound.playMusic("Main_Theme.mp3");
                 root.getChildren().remove(minShipOrNotPlacedWarning);
@@ -77,11 +77,10 @@ public class MainScreen {
             }
         });
         root.getChildren().add(finish);
-        scene.getStylesheets().add(getClass().getResource("style.css").toExternalForm());
         root.getChildren().add(placingField);
         placingScreen.createShipSettings();
         root.getChildren().add(placingScreen.settings);
 
-        return scene;
+        return root;
     }
 }

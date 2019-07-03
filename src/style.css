@@ -27,3 +27,7 @@
   -fx-stroke : WHITE;
   -fx-stroke-width: 2;
 }
+
+.mainScreen{
+    -fx-background-image: url("img/water.jpg");
+}

@@ -25,4 +25,19 @@ public class Sound {
         mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
         mediaPlayer.setAutoPlay(true);
     }
+
+    public static void playSound(String sound){
+        //Initialising path of the media file, replace this with your file path
+        String path = "resources\\music\\" + sound;
+
+        //Instantiating Media class
+        Media media = new Media(new File(path).toURI().toString());
+
+        //Instantiating MediaPlayer class
+        mediaPlayer = new MediaPlayer(media);
+
+        //by setting autoPlay to true, the audio will be played
+        mediaPlayer.setCycleCount(1);
+        mediaPlayer.setAutoPlay(true);
+    }
 }

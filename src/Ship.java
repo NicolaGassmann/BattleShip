@@ -172,7 +172,7 @@ public class Ship {
     }
 
     //counts up in the hitCounter and checks if the ship is destroyed
-    public void isHit(){
+    public void isHit() {
         hits++;
         if(hits >= length){
             isDestroyed = true;

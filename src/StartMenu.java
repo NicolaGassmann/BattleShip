@@ -33,7 +33,7 @@ public class StartMenu {
         logo.setFitHeight(150);
         Button start = new Button("Start");
         start.setOnAction(event -> {
-            NavController.setScene(mainScreen.getPlacingScreen(longfield.isSelected()));
+            NavController.setRoot(mainScreen.getPlacingScreen(longfield.isSelected()));
             Sound.stopMusic();
             Sound.playMusic("Tetris_Classic.mp3");
         });
