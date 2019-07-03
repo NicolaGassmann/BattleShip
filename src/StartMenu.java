@@ -32,7 +32,7 @@ public class StartMenu {
         start.setOnAction(event -> {
             NavController.setScene(mainScreen.getPlacingScreen(false));
             Sound.stopMusic();
-            Sound.playMusic("Tetris_Classic.mp3");
+            Sound.playMusic("Tetris_AIO.mp3");
         });
 
         Button settings = new Button("Options");

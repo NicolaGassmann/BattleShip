@@ -38,7 +38,8 @@ public class MainScreen {
         minShipOrNotPlacedWarning.setTextFill(RED);
         minShipOrNotPlacedWarning.relocate(50, scene.getHeight()-50);
         Button finish = new Button("finish");
-        finish.relocate(fieldLength * 50 + 100, scene.getHeight() / 2);
+        finish.relocate(fieldLength * 50 + 100, scene.getHeight()-75);
+        finish.setPrefWidth(255);
         finish.setOnAction(event -> {
             if (placingScreen.shipCounter >= minShips && placingScreen.selectedShip.isPlaced()) {
                 Sound.stopMusic();
@@ -54,12 +55,12 @@ public class MainScreen {
                     placingFieldGroup.getChildren().add(ship.getShip());
                     ship.getShip().toBack();
                 }
-                ScaleTransition st = new ScaleTransition(Duration.seconds(2), placingFieldGroup);
+                ScaleTransition st = new ScaleTransition(Duration.seconds(1), placingFieldGroup);
                 st.setToX(0.5);
                 st.setToY(0.5);
                 st.play();
 
-                TranslateTransition tt = new TranslateTransition(Duration.seconds(2), placingFieldGroup);
+                TranslateTransition tt = new TranslateTransition(Duration.seconds(1), placingFieldGroup);
                 if(longField) {
                     tt.setToX(500);
                     tt.setToY(-150);

@@ -146,6 +146,18 @@ class PlacingScreen {
                 tfBoatLength.setText(newValue.replaceAll("[^\\d]", ""));
             }
         });
+
+        Button cancel = new Button("cancel");
+        cancel.setPrefWidth(255);
+        cancel.setDisable(false);
+        cancel.setOnAction(event->{
+            if(selectedShip != null && !selectedShip.isPlaced()) {
+                deleteShip(selectedShip);
+                selectedShip.setPlaced();
+                cancel.setDisable(true);
+            }
+        });
+
         Button create = new Button("create");
         create.setPrefWidth(255);
         //creates a boat when create button is pressed
@@ -189,6 +201,7 @@ class PlacingScreen {
                                 settings.getChildren().remove(maxShipsWarning);
                                 createShip(root, tfBoatName.getText(), intBoatLength, cpBoatColor.getValue());
                                 createAndPlaceAiShip(tfBoatName.getText(), intBoatLength, cpBoatColor.getValue());
+                                cancel.setDisable(false);
                                 //counts how many playerShips of each type there are
                                 switch (intBoatLength) {
                                     case 2:
@@ -217,6 +230,7 @@ class PlacingScreen {
                     } else {
                         createShip(root, tfBoatName.getText(), intBoatLength, cpBoatColor.getValue());
                         createAndPlaceAiShip(tfBoatName.getText(), intBoatLength, cpBoatColor.getValue());
+                        cancel.setDisable(false);
                         //counts how many playerShips of each type there are
                         switch (intBoatLength) {
                             case 2:
@@ -282,7 +296,7 @@ class PlacingScreen {
         boatName.getChildren().addAll(lblBoatName, tfBoatName);
         boatLength.getChildren().addAll(lblBoatLength, tfBoatLength);
         boatColor.getChildren().addAll(lblBoatColor, cpBoatColor);
-        settings.getChildren().addAll(boatName, boatLength, boatColor, create, generateShips);
+        settings.getChildren().addAll(boatName, boatLength, boatColor, create, generateShips, cancel);
         settings.setSpacing(10);
         settings.setLayoutX(fieldLength * 50 + 100);
         settings.setLayoutY(50);
