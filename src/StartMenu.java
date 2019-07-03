@@ -1,8 +1,11 @@
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.Slider;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
@@ -68,10 +71,26 @@ public class StartMenu {
         back.setOnAction(event -> NavController.setRoot(getStartScreen()));
         back.setMinSize(120, 50);
 
+        Slider difficulty = new Slider();
+        difficulty.setMin(1);
+        difficulty.setMax(3);
+        difficulty.setValue(2);
+        difficulty.setShowTickLabels(true);
+        difficulty.setShowTickMarks(true);
+        difficulty.setMajorTickUnit(1);
+        difficulty.setMinorTickCount(0);
+        difficulty.setBlockIncrement(1);
+        difficulty.setMaxWidth(100);
+        difficulty.valueProperty().addListener((obs, oldVal, newVal) -> {
+            difficulty.setValue(Math.round(newVal.doubleValue()));
+            SettingsController.setDifficulty((int) difficulty.getValue());
+            System.out.println(difficulty.getValue());
+        } );
+
         VBox vbox = new VBox();
         vbox.setSpacing(50);
         vbox.setAlignment(Pos.CENTER);
-        vbox.getChildren().addAll(longfield, back);
+        vbox.getChildren().addAll(difficulty, longfield, back);
 
         root.setCenter(vbox);
 

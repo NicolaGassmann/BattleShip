@@ -1,7 +1,5 @@
-import javafx.scene.Group;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextArea;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -17,10 +15,11 @@ public class BattleScreen {
     private int fieldLength;
     private Ship selectedAiShip;
     private Ship selectedPlayerShip;
+    private Tile selectedAiTile;
     private List<Ship> playerShips;
     private List<Ship> aiShips;
     private List<Tile> tiles;
-    private Set<Position> shotPosition = new HashSet<>();
+    private List<Position> shotPositions = new ArrayList<>();
     private Pane root;
     private VBox logContent = new VBox();
     private boolean lastAiShotHit;
@@ -71,18 +70,24 @@ public class BattleScreen {
                                 selectedAiShip = aiShip;
                             }
                         }
-                        String yOutput = numberToLetter(tile.getPosition().getY()+1, true);
+                        String yOutput = numberToLetter(tile.getPosition().getY() + 1, true);
                         String xOutput = Integer.toString(tile.getPosition().getX());
                         Label playerShot = new Label("Player: " + yOutput + "/" + xOutput);
                         logContent.getChildren().add(playerShot);
                         shoot(region, selectedAiShip, true);
-                        if(!lastPlayerShotHit) {
-                            aiShoot();
-                            while(lastAiShotHit) {
-                                aiShoot();
+                        selectedAiShip = null;
+                        if (SettingsController.getDifficulty() == 1) {
+                            if (!lastPlayerShotHit) {
+                                randomShot();
+                                while (lastAiShotHit) {
+                                    randomShot();
+                                }
+                            }
+                        } else if (SettingsController.getDifficulty() == 3) {
+                            if (!lastPlayerShotHit) {
+                                aimBot();
                             }
                         }
-                        selectedAiShip = null;
                     }
                 }
             });
@@ -107,7 +112,8 @@ public class BattleScreen {
         return collisionDetected;
     }
 
-    private void aiShoot() {
+    //shoots at a random tile in the battlefield
+    private void randomShot() {
         //creates two random numbers between 0 and 9 which will be the shots coordinates
         Random random = new Random();
         int min = 0;
@@ -115,12 +121,12 @@ public class BattleScreen {
         int x = random.nextInt(max - min) + min;
         int y = random.nextInt(max - min) + min;
         Position position = new Position(x, y);
-        while (shotPosition.contains(position)) {
+        while (shotPositions.contains(position)) {
             x = random.nextInt(max - min) + min;
             y = random.nextInt(max - min) + min;
             position = new Position(x, y);
         }
-        shotPosition.add(position);
+        shotPositions.add(position);
         for (Tile tile : tiles) {
             if (position.equals(tile.getPosition())) {
                 for (Ship playerShip : playerShips) {
@@ -128,7 +134,7 @@ public class BattleScreen {
                         selectedPlayerShip = playerShip;
                     }
                 }
-                String yOutput = numberToLetter(tile.getPosition().getY()+1, true);
+                String yOutput = numberToLetter(tile.getPosition().getY() + 1, true);
                 String xOutput = Integer.toString(tile.getPosition().getX());
                 Label aiShot = new Label("Computer: " + yOutput + "/" + xOutput);
                 logContent.getChildren().add(aiShot);
@@ -138,13 +144,47 @@ public class BattleScreen {
         }
     }
 
+    //shoots random until it finds a ship and then destroys the ship
+    private void aimBot() {
+        //creates new random coordinates until he hits a ship
+        Position position = getRandomPosition();
+        while (shotPositions.contains(position)) {
+            position = getRandomPosition();
+        }
+        while (selectedPlayerShip == null) {
+            for (Tile tile : tiles) {
+                if (position.equals(tile.getPosition())) {
+                    selectedAiTile = tile;
+                    for (Ship playerShip : playerShips) {
+                        if (checkIfShipHit(tile.getTile(), playerShip)) {
+                            selectedPlayerShip = playerShip;
+                        }
+                    }
+                }
+            }
+            if (selectedPlayerShip == null) {
+                position = getRandomPosition();
+                while (shotPositions.contains(position)) {
+                    position = getRandomPosition();
+                }
+            }
+        }
+        shotPositions.add(position);
+        String yOutput = numberToLetter(selectedAiTile.getPosition().getY() + 1, true);
+        String xOutput = Integer.toString(selectedAiTile.getPosition().getX());
+        Label aiShot = new Label("Computer: " + yOutput + "/" + xOutput);
+        logContent.getChildren().add(aiShot);
+        shoot(selectedAiTile.getTile(), selectedPlayerShip, false);
+        selectedPlayerShip = null;
+    }
+
     private void shoot(Rectangle tile, Ship selectedShip, boolean player) {
         if (selectedShip != null) {
             tile.setFill(rgb(255, 0, 0, 0.5));
             selectedShip.isHit();
-            if(player){
+            if (player) {
                 lastPlayerShotHit = true;
-            }else{
+            } else {
                 lastAiShotHit = true;
             }
             if (selectedShip.isDestroyed()) {
@@ -358,5 +398,15 @@ public class BattleScreen {
             }
         }
         return letter;
+    }
+
+    private Position getRandomPosition() {
+        Random random = new Random();
+        int min = 0;
+        int max = fieldLength;
+        int x = random.nextInt(max - min) + min;
+        int y = random.nextInt(max - min) + min;
+        Position position = new Position(x, y);
+        return position;
     }
 }
