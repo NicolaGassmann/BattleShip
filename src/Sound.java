@@ -6,10 +6,14 @@ import java.io.File;
 public class Sound {
     private static MediaPlayer mediaPlayer;
 
-    //plays main theme
-    public static void playMainTheme(){
+    public static void stopMusic(){
+        mediaPlayer.stop();
+    }
+
+    //plays an sound file from the resources/music folder
+    public static void playMusic(String music){
         //Initialising path of the media file, replace this with your file path
-        String path = "src\\Main_Theme.mp3";
+        String path = "resources\\music\\" + music;
 
         //Instantiating Media class
         Media media = new Media(new File(path).toURI().toString());

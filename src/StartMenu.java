@@ -6,7 +6,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
-import javafx.stage.Stage;
 
 public class StartMenu {
 
@@ -30,7 +29,12 @@ public class StartMenu {
         logo.setFitWidth(150);
         logo.setFitHeight(150);
         Button start = new Button("Start");
-        start.setOnAction(event -> NavController.setScene(mainScreen.getPlacingScreen(false)));
+        start.setOnAction(event -> {
+            NavController.setScene(mainScreen.getPlacingScreen(false));
+            Sound.stopMusic();
+            Sound.playMusic("Tetris_Classic.mp3");
+        });
+
         Button settings = new Button("Options");
         settings.setOnAction(event -> NavController.setScene(getSettings()));
         Button quit = new Button("Quit");

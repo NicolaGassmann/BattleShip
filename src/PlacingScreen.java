@@ -1,6 +1,7 @@
 import javafx.scene.Group;
+import javafx.scene.control.*;
 import javafx.scene.control.Button;
-import javafx.scene.control.ColorPicker;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseButton;
@@ -10,7 +11,6 @@ import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 
-import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -33,6 +33,7 @@ class PlacingScreen {
     private int maxSameShips;
     private int fieldLength;
     private Group root;
+    private boolean errorInplacing = false;
 
     public PlacingScreen(Group root, int fieldLength, int maxSameShips) {
         this.fieldLength = fieldLength;
@@ -240,22 +241,41 @@ class PlacingScreen {
                 }
             }
         });
-
+        ButtonType buttonTypeYes = new ButtonType("yes");
+        ButtonType buttonTypeNo = new ButtonType("no");
+        Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.setTitle("Your ships will be deleted!");
+        dialog.setHeaderText("Your about to generate all your ships which includes deleting the currently placed ones!");
+        dialog.setContentText("Are you sure you want to generate random positions for your ships? (you can still change them later)");
+        dialog.getDialogPane().getButtonTypes().add(buttonTypeYes);
+        dialog.getDialogPane().getButtonTypes().add(buttonTypeNo);
         Button generateShips = new Button("generate Ships");
         generateShips.setPrefWidth(255);
         generateShips.setOnAction(event -> {
             if (playerShips.isEmpty()) {
-                settings.getChildren().remove(shipsAlreadyPlacedWarning);
                 generateShips(cpBoatColor.getValue());
+                while(errorInplacing){
+                    System.out.println("replace all ships");
+                    generateShips(cpBoatColor.getValue());
+                }
             } else {
-                if (!settings.getChildren().contains(shipsAlreadyPlacedWarning)) {
-                    settings.getChildren().add(shipsAlreadyPlacedWarning);
-                }
-                int count = playerShips.size();
-                for(int i = 0; i < count; i++){
-                    deleteShip(playerShips.get(0));
-                }
-
+                dialog.showAndWait().ifPresent(response -> {
+                    if(response == buttonTypeYes){
+                        int count = playerShips.size();
+                        for(int i = 0; i < count; i++){
+                            deleteShip(playerShips.get(0));
+                        }
+                        generateShips(cpBoatColor.getValue());
+                        while(errorInplacing){
+                            System.out.println("replace all ships");
+                            int count1 = playerShips.size();
+                            for(int i = 0; i < count1; i++){
+                                deleteShip(playerShips.get(0));
+                            }
+                            generateShips(cpBoatColor.getValue());
+                        }
+                    }
+                });
             }
         });
 
@@ -273,6 +293,10 @@ class PlacingScreen {
         //create ship with the same name, length and color as the users ship, but with isAI set true
         Ship ship = new Ship(name, length, paint);
         placeShip(ship, aiShips);
+        while(errorInplacing){
+            System.out.println("replace ai ships");
+            replaceAiShips();
+        }
     }
 
     //creates a ship and adds it to the given group and selects the boat
@@ -330,21 +354,14 @@ class PlacingScreen {
                 ship.moveShip(x, y, fieldLength * 50);
                 placeCounter++;
             } else {
-                System.out.println("error");
-                /*
-                System.out.println("replace all");
-                int i = 0;
-                placeShip(ship);
-                for (Ship ship1 : aiShips) {
-                    for (; checkIfPlaceTaken(ship1.getShip(), aiShips); ) {
-                        placeShip(ship1);
-                    }
-                    i++;
-                    System.out.println("i = " + i);
-                }
-                */
                 break;
             }
+        }
+        if(placeCounter >= 10000){
+            System.out.println("error");
+            errorInplacing = true;
+        }else{
+            errorInplacing = false;
         }
         placeCounter = 0;
         ship.placeHitBox();
@@ -371,11 +388,15 @@ class PlacingScreen {
         for (int i = 0; i < maxSameShips * 4; i++) {
             if (i < maxSameShips + 1) {
                 length = 2;
+                twoCounter++;
             } else if (i < maxSameShips * 2 + 1) {
                 length = 3;
+                threeCounter++;
             } else if (i < maxSameShips * 3 + 1) {
                 length = 4;
+                fourCounter++;
             } else {
+                fiveCounter++;
                 length = 5;
             }
             createShip(root, "", length, paint);
@@ -385,12 +406,35 @@ class PlacingScreen {
         }
     }
 
+    //deletes and recreates all ai ships in a different place
+    public void replaceAiShips() {
+        aiShips.clear();
+        for(int i = 0; i < twoCounter; i++){
+            createAndPlaceAiShip("", 2, BLACK);
+        }
+        for(int i = 0; i < threeCounter; i++){
+            createAndPlaceAiShip("", 3, BLACK);
+        }
+        for(int i = 0; i < fourCounter; i++){
+            createAndPlaceAiShip("", 4, BLACK);
+        }
+        for(int i = 0; i < fiveCounter; i++){
+            createAndPlaceAiShip("", 5, BLACK);
+        }
+    }
+
     //deletes a ship and it's AI brother
     public void deleteShip(Ship ship) {
         int removingShip = playerShips.indexOf(ship);
         root.getChildren().remove(ship.getShip());
         aiShips.remove(removingShip);
         playerShips.remove(ship);
+        switch(ship.getLength()){
+            case 2: twoCounter--;break;
+            case 3: threeCounter--;break;
+            case 4: fourCounter--;break;
+            case 5: fiveCounter--;break;
+        }
         shipCounter--;
     }
 }

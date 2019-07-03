@@ -14,7 +14,7 @@ public class Main extends Application {
 
         StartMenu startmenu = new StartMenu();
         Scene startScreen = startmenu.getStartScreen();
-        Sound.playMainTheme();
+        Sound.playMusic("Great_Fairy_Fountain.mp3");
         NavController.setScene(startScreen);
         NavController.getStage().setResizable(false);
         NavController.getStage().show();

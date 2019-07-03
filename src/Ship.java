@@ -182,4 +182,8 @@ public class Ship {
     public boolean isDestroyed(){
         return isDestroyed;
     }
+
+    public int getLength() {
+        return length;
+    }
 }

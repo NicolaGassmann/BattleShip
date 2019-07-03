@@ -32,7 +32,6 @@ public class MainScreen {
         }
         Group root = new Group();
         PlacingScreen placingScreen = new PlacingScreen(root, fieldLength, maxSameShips);
-        BattleScreen battleScreen = new BattleScreen(root, fieldLength, placingScreen.getPlayerShips(), placingScreen.getAiShips(), placingScreen.getTiles());
         Scene scene = new Scene(root, fieldLength * 50 + 400, fieldLength * 50 + 100, new ImagePattern(new Image("img/water.jpg")));
         GridPane placingField = placingScreen.getPlacingField();
         Label minShipOrNotPlacedWarning = new Label("you need at least one ship to start and make sure the currently selected ship is placed!");
@@ -42,6 +41,8 @@ public class MainScreen {
         finish.relocate(fieldLength * 50 + 100, scene.getHeight() / 2);
         finish.setOnAction(event -> {
             if (placingScreen.shipCounter >= minShips && placingScreen.selectedShip.isPlaced()) {
+                Sound.stopMusic();
+                Sound.playMusic("Main_Theme.mp3");
                 root.getChildren().remove(minShipOrNotPlacedWarning);
                 root.getChildren().remove(placingScreen.settings);
                 root.getChildren().remove(finish);
@@ -60,13 +61,16 @@ public class MainScreen {
 
                 TranslateTransition tt = new TranslateTransition(Duration.seconds(2), placingFieldGroup);
                 if(longField) {
-                    tt.setToX(475);
+                    tt.setToX(500);
                     tt.setToY(-150);
                 }else{
-                    tt.setToX(400);
+                    tt.setToX(425);
                     tt.setToY(-125);
                 }
                 tt.play();
+                tt.setOnFinished(event1->{
+                    BattleScreen battleScreen = new BattleScreen(root, fieldLength, placingScreen.getPlayerShips(), placingScreen.getAiShips(), placingScreen.getTiles());
+                });
             }else{
                 if(!root.getChildren().contains(minShipOrNotPlacedWarning)) {
                     root.getChildren().add(minShipOrNotPlacedWarning);
