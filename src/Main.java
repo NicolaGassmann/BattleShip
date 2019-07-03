@@ -13,11 +13,12 @@ public class Main extends Application {
     public void start(Stage stage) {
 
         StartMenu startmenu = new StartMenu();
-        Scene startScreen = startmenu.getStartScreen();
         Sound.playMusic("Great_Fairy_Fountain.mp3");
-        NavController.setScene(startScreen);
+        NavController.setScene(new Scene(startmenu.getStartScreen(), 1050, 700));
+        NavController.getScene().getStylesheets().add(getClass().getResource("style.css").toExternalForm());
         NavController.getStage().setResizable(false);
-        NavController.getStage().setFullScreen(true);
+        NavController.getStage().setFullScreen(false);
+
         NavController.getStage().show();
     }
 }

@@ -1,7 +1,11 @@
 import javafx.scene.Group;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 
@@ -17,12 +21,12 @@ public class BattleScreen {
     private List<Ship> aiShips;
     private List<Tile> tiles;
     private Set<Position> shotPosition = new HashSet<>();
-    private int aliveAiShips;
-    private int alivePlayerShips;
-    private Group root;
-    private TextArea log = new TextArea();
+    private Pane root;
+    private VBox logContent = new VBox();
+    private boolean lastAiShotHit;
+    private boolean lastPlayerShotHit;
 
-    public BattleScreen(Group root, int fieldLength, List<Ship> ships, List<Ship> aiShips, List<Tile> tiles) {
+    public BattleScreen(Pane root, int fieldLength, List<Ship> ships, List<Ship> aiShips, List<Tile> tiles) {
         this.fieldLength = fieldLength;
         this.root = root;
         this.tiles = tiles;
@@ -33,11 +37,12 @@ public class BattleScreen {
 
     public void getBattleField() {
         GridPane battleField = new GridPane();
-        log.setWrapText(true);
+        ScrollPane log = new ScrollPane();
+        log.vvalueProperty().bind(logContent.heightProperty());
+        log.setContent(logContent);
         log.setLayoutX(fieldLength * 50 + 100);
         log.setLayoutY(fieldLength * 25 + 75);
         log.setPrefSize(fieldLength * 25, fieldLength * 25 - 25);
-        log.setEditable(false);
         root.getChildren().add(battleField);
         root.getChildren().add(log);
         battleField.setLayoutX(50);
@@ -66,11 +71,17 @@ public class BattleScreen {
                                 selectedAiShip = aiShip;
                             }
                         }
-                        shoot(region, selectedAiShip, true);
                         String yOutput = numberToLetter(tile.getPosition().getY()+1, true);
                         String xOutput = Integer.toString(tile.getPosition().getX());
-                        log.appendText("Player: " + yOutput + "/" + xOutput + "\r\n");
-                        aiShoot();
+                        Label playerShot = new Label("Player: " + yOutput + "/" + xOutput);
+                        logContent.getChildren().add(playerShot);
+                        shoot(region, selectedAiShip, true);
+                        if(!lastPlayerShotHit) {
+                            aiShoot();
+                            while(lastAiShotHit) {
+                                aiShoot();
+                            }
+                        }
                         selectedAiShip = null;
                     }
                 }
@@ -87,8 +98,8 @@ public class BattleScreen {
 
     private boolean checkIfShipHit(Shape block, Ship ship) {
         boolean collisionDetected = false;
-        if (ship.getShip() != block) {
-            Shape intersect = Shape.intersect(block, ship.getShip());
+        if (ship.getShootingHitBox() != block) {
+            Shape intersect = Shape.intersect(block, ship.getShootingHitBox());
             if (intersect.getBoundsInLocal().getWidth() != -1) {
                 collisionDetected = true;
             }
@@ -119,7 +130,8 @@ public class BattleScreen {
                 }
                 String yOutput = numberToLetter(tile.getPosition().getY()+1, true);
                 String xOutput = Integer.toString(tile.getPosition().getX());
-                log.appendText("Computer: " + yOutput + "/" + xOutput + "\r\n");
+                Label aiShot = new Label("Computer: " + yOutput + "/" + xOutput);
+                logContent.getChildren().add(aiShot);
                 shoot(tile.getTile(), selectedPlayerShip, false);
                 selectedPlayerShip = null;
             }
@@ -130,10 +142,17 @@ public class BattleScreen {
         if (selectedShip != null) {
             tile.setFill(rgb(255, 0, 0, 0.5));
             selectedShip.isHit();
+            if(player){
+                lastPlayerShotHit = true;
+            }else{
+                lastAiShotHit = true;
+            }
             if (selectedShip.isDestroyed()) {
                 if (player) {
-                    log.appendText("You destroyed your opponents ship" + selectedShip.getName() + "!" + "\r\n");
-                    aliveAiShips = 0;
+                    Label destroyedShip = new Label("You destroyed your opponents ship" + selectedShip.getName() + "!");
+                    destroyedShip.setTextFill(GREEN);
+                    logContent.getChildren().add(destroyedShip);
+                    int aliveAiShips = 0;
                     for (Ship ship : aiShips) {
                         if (!ship.isDestroyed()) {
                             aliveAiShips++;
@@ -141,12 +160,16 @@ public class BattleScreen {
                     }
                     if (aliveAiShips == 0) {
                         WinningScreen winningScreen = new WinningScreen();
-                        NavController.setScene(winningScreen.getWinningScreen("player"));
+                        NavController.setRoot(winningScreen.getWinningScreen("player"));
                     }
-                    log.appendText("You need to destroy " + aliveAiShips + " more ships to win." + "\r\n");
+                    Label shipsToGo = new Label("You need to destroy " + aliveAiShips + " more ships to win.");
+                    shipsToGo.setTextFill(GREEN);
+                    logContent.getChildren().add(shipsToGo);
                 } else {
-                    log.appendText("Your opponent destroyed your ship" + selectedShip.getName() + "!" + "\r\n");
-                    alivePlayerShips = 0;
+                    Label aiDestroyedShip = new Label("Your opponent destroyed your ship" + selectedShip.getName() + "!");
+                    aiDestroyedShip.setTextFill(RED);
+                    logContent.getChildren().add(aiDestroyedShip);
+                    int alivePlayerShips = 0;
                     for (Ship ship : playerShips) {
                         if (!ship.isDestroyed()) {
                             alivePlayerShips++;
@@ -154,13 +177,17 @@ public class BattleScreen {
                     }
                     if (alivePlayerShips == 0) {
                         WinningScreen winningScreen = new WinningScreen();
-                        NavController.setScene(winningScreen.getWinningScreen("ai"));
+                        NavController.setRoot(winningScreen.getWinningScreen("ai"));
                     }
-                    log.appendText("You have " + alivePlayerShips + " ships left." + "\r\n");
+                    Label shipsLeft = new Label("You have " + alivePlayerShips + " ships left.");
+                    shipsLeft.setTextFill(RED);
+                    logContent.getChildren().add(shipsLeft);
                 }
             }
         } else {
             tile.setFill(rgb(200, 200, 200, 0.7));
+            lastPlayerShotHit = false;
+            lastAiShotHit = false;
         }
     }
 

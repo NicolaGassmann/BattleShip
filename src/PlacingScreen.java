@@ -6,6 +6,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
@@ -25,11 +26,11 @@ class PlacingScreen {
     private List<Tile> tiles = new ArrayList<>();
     private int maxSameShips;
     private int fieldLength;
-    private Group root;
+    private Pane root;
     private boolean errorInPlacing = false;
     private Button cancel = new Button("cancel");
 
-    public PlacingScreen(Group root, int fieldLength, int maxSameShips) {
+    public PlacingScreen(Pane root, int fieldLength, int maxSameShips) {
         this.fieldLength = fieldLength;
         this.maxSameShips = maxSameShips;
         this.root = root;
@@ -64,7 +65,8 @@ class PlacingScreen {
             region.setOnMouseClicked(event -> {
                 if (event.getButton() == MouseButton.PRIMARY) {
                     if (selectedShip != null) {
-                        selectedShip.placeHitBox();
+                        selectedShip.placePlacingHitBox();
+                        selectedShip.placeShootingHitBox();
                         if (!checkIfPlaceTaken(selectedShip.getShip(), playerShips)) {
                             selectedShip.setPlaced();
                             selectedShip.setPosition();
@@ -194,8 +196,8 @@ class PlacingScreen {
                                 settings.getChildren().remove(shipNotPlacedWarning);
                                 //checks if the maximum amount of playerShips is reached
                                 settings.getChildren().remove(maxShipsWarning);
-                                createShip(root, tfBoatName.getText(), intBoatLength, cpBoatColor.getValue());
-                                createAndPlaceAiShip(tfBoatName.getText(), intBoatLength, cpBoatColor.getValue());
+                                createShip(tfBoatName.getText(), intBoatLength, cpBoatColor.getValue());
+                                createAndPlaceAiShip(tfBoatName.getText(), intBoatLength);
                                 cancel.setDisable(false);
                                 //counts how many playerShips of each type there are
                             } else {
@@ -209,8 +211,8 @@ class PlacingScreen {
                             }
                         }
                     } else {
-                        createShip(root, tfBoatName.getText(), intBoatLength, cpBoatColor.getValue());
-                        createAndPlaceAiShip(tfBoatName.getText(), intBoatLength, cpBoatColor.getValue());
+                        createShip(tfBoatName.getText(), intBoatLength, cpBoatColor.getValue());
+                        createAndPlaceAiShip(tfBoatName.getText(), intBoatLength);
                         cancel.setDisable(false);
                         //counts how many playerShips of each type there are
                     }
@@ -270,9 +272,16 @@ class PlacingScreen {
     }
 
     //creates an AI ship and uses the placeShip function to place it
-    private void createAndPlaceAiShip(String name, int length, Paint paint) {
+    private void createAndPlaceAiShip(String name, int length) {
         //create ship with the same name, length and color as the users ship, but with isAI set true
-        Ship ship = new Ship(name, length, paint);
+        Ship ship = new Ship(name, length, RED);
+        aiShips.add(ship);
+        ship.getShip().setVisible(true);
+        root.getChildren().add(ship.getShip());
+        root.getChildren().add(ship.getPlacingHitBox());
+        ship.getPlacingHitBox().setVisible(false);
+        root.getChildren().add(ship.getShootingHitBox());
+        ship.getShootingHitBox().setVisible(false);
         placeShip(ship, aiShips);
         while (errorInPlacing) {
             System.out.println("replace ai ships");
@@ -281,12 +290,16 @@ class PlacingScreen {
     }
 
     //creates a ship and adds it to the given group and selects the boat
-    private void createShip(Group root, String name, int length, Paint paint) {
+    private void createShip(String name, int length, Paint paint) {
         Ship ship = new Ship(name, length, paint);
         playerShips.add(ship);
         root.getChildren().add(ship.getShip());
         ship.getShip().toBack();
         selectedShip = ship;
+        root.getChildren().add(ship.getPlacingHitBox());
+        ship.getPlacingHitBox().setVisible(false);
+        root.getChildren().add(ship.getShootingHitBox());
+        ship.getShootingHitBox().setVisible(false);
         countShip(length);
     }
 
@@ -294,8 +307,8 @@ class PlacingScreen {
     private boolean checkIfPlaceTaken(Shape block, List<Ship> ships) {
         boolean collisionDetected = false;
         for (Ship ship : ships) {
-            if (ship.getHitBox() != block && ship != selectedShip) {
-                Shape intersect = Shape.intersect(block, ship.getHitBox());
+            if (ship.getPlacingHitBox() != block && ship != selectedShip) {
+                Shape intersect = Shape.intersect(block, ship.getPlacingHitBox());
                 if (intersect.getBoundsInLocal().getWidth() != -1) {
                     collisionDetected = true;
                 }
@@ -345,10 +358,10 @@ class PlacingScreen {
         } else {
             errorInPlacing = false;
         }
-        ship.placeHitBox();
+        ship.placePlacingHitBox();
+        ship.placeShootingHitBox();
         ship.setPlaced();
         ship.setPosition();
-        ships.add(ship);
     }
 
     public List<Tile> getTiles() {
@@ -376,34 +389,40 @@ class PlacingScreen {
             } else {
                 length = 5;
             }
-            createShip(root, "", length, paint);
-            playerShips.remove(selectedShip);
-            createAndPlaceAiShip("", length, paint);
+            createShip("", length, paint);
+            createAndPlaceAiShip("", length);
             placeShip(selectedShip, playerShips);
         }
     }
 
     //deletes and recreates all ai ships in a different place
     private void replaceAiShips() {
-        aiShips.clear();
+        clearAiShips();
+
         for (int i = 0; i < ShipCounter.getTwoTypes(); i++) {
-            createAndPlaceAiShip("", 2, BLACK);
+            createAndPlaceAiShip("", 2);
         }
         for (int i = 0; i < ShipCounter.getThreeTypes(); i++) {
-            createAndPlaceAiShip("", 3, BLACK);
+            createAndPlaceAiShip("", 3);
         }
         for (int i = 0; i < ShipCounter.getFourTypes(); i++) {
-            createAndPlaceAiShip("", 4, BLACK);
+            createAndPlaceAiShip("", 4);
         }
         for (int i = 0; i < ShipCounter.getFiveTypes(); i++) {
-            createAndPlaceAiShip("", 5, BLACK);
+            createAndPlaceAiShip("", 5);
         }
     }
 
     //deletes a ship and it's AI brother
     private void deleteShip(Ship ship) {
         int removingShip = playerShips.indexOf(ship);
+        Ship aiShip = aiShips.get(removingShip);
+        root.getChildren().remove(aiShip.getShip());
         root.getChildren().remove(ship.getShip());
+        root.getChildren().remove(ship.getPlacingHitBox());
+        root.getChildren().remove(ship.getShootingHitBox());
+        root.getChildren().remove(aiShip.getPlacingHitBox());
+        root.getChildren().remove(aiShip.getShootingHitBox());
         aiShips.remove(removingShip);
         playerShips.remove(ship);
         switch (ship.getLength()) {
@@ -420,6 +439,15 @@ class PlacingScreen {
                 ShipCounter.fiveDown();
                 break;
         }
+    }
+
+    private void clearAiShips(){
+        for(Ship aiShip:aiShips){
+            root.getChildren().remove(aiShip.getShootingHitBox());
+            root.getChildren().remove(aiShip.getPlacingHitBox());
+            root.getChildren().remove(aiShip.getShip());
+        }
+        aiShips.clear();
     }
 
     private void countShip(int length) {

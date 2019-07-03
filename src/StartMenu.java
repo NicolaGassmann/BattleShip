@@ -1,4 +1,5 @@
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -8,21 +9,16 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 
+import static javafx.scene.paint.Color.rgb;
+
 public class StartMenu {
 
-    private CheckBox longfield = new CheckBox("long field");
-
-    public Scene getStartScreen() {
+    public Parent getStartScreen() {
         MainScreen mainScreen = new MainScreen();
         StackPane root = new StackPane();
-        Scene scene = new Scene(root, 900, 600);
-
-        root.getStylesheets().add(getClass().getResource("style.css").toExternalForm());
-
+        root.getStyleClass().add("battleShip");
         Rectangle glass = new Rectangle(200, 400);
-        glass.setStyle("-fx-fill: white;");
-
-        glass.setOpacity(0.5);
+        glass.setFill(rgb(255, 255, 255, 0.5));
 
         VBox vbox = new VBox();
         vbox.setSpacing(20);
@@ -33,13 +29,13 @@ public class StartMenu {
         logo.setFitHeight(150);
         Button start = new Button("Start");
         start.setOnAction(event -> {
-            NavController.setRoot(mainScreen.getPlacingScreen(longfield.isSelected()));
+            NavController.setRoot(mainScreen.getPlacingScreen());
             Sound.stopMusic();
             Sound.playMusic("Tetris_Classic.mp3");
         });
 
         Button settings = new Button("Options");
-        settings.setOnAction(event -> NavController.setScene(getSettings()));
+        settings.setOnAction(event -> NavController.setRoot(getSettings()));
         Button quit = new Button("Quit");
         quit.setOnAction(event -> NavController.getStage().close());
 
@@ -53,17 +49,23 @@ public class StartMenu {
 
 
 
-        return scene;
+        return root;
     }
 
-    public Scene getSettings() {
+    private Parent getSettings() {
         BorderPane root = new BorderPane();
-        Scene scene = new Scene(root, 850, 600);
 
-        root.getStylesheets().add(getClass().getResource("style.css").toExternalForm());
+        CheckBox longfield = new CheckBox("long field");
+        longfield.setOnAction(event->{
+            if(longfield.isSelected()){
+                SettingsController.setLongField(true);
+            }else{
+                SettingsController.setLongField(false);
+            }
+        });
 
-        Button back = new Button("Zurück");
-        back.setOnAction(event -> NavController.setScene(getStartScreen()));
+        Button back = new Button("Back");
+        back.setOnAction(event -> NavController.setRoot(getStartScreen()));
         back.setMinSize(120, 50);
 
         VBox vbox = new VBox();
@@ -73,7 +75,7 @@ public class StartMenu {
 
         root.setCenter(vbox);
 
-        return scene;
+        return root;
 
     }
 

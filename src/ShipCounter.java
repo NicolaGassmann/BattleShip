@@ -54,4 +54,12 @@ public class ShipCounter {
         fiveTypes--;
         allShips--;
     }
+
+    static void reset(){
+        twoTypes = 0;
+        threeTypes = 0;
+        fourTypes = 0;
+        fiveTypes = 0;
+        allShips = 0;
+    }
 }

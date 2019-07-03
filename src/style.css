@@ -1,5 +1,5 @@
 
-.root{
+.battleShip {
     -fx-background-image: url("img/start_screen.jpg");
     -fx-background-position: left top, center;
     -fx-background-repeat: no-repeat;
@@ -28,6 +28,16 @@
   -fx-stroke-width: 2;
 }
 
-.mainScreen{
+.mainScreen {
     -fx-background-image: url("img/water.jpg");
+        -fx-background-position: left top, center;
+        -fx-background-repeat: no-repeat;
+        -fx-background-size: cover, auto;
 }
+.deadPool {
+    -fx-background-image: url("img/DeadPool.gif");
+    -fx-background-position: left top, center;
+    -fx-background-size: 350px 350px;
+    -fx-background-repeat: repeat;
+}
+

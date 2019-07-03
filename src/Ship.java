@@ -1,10 +1,13 @@
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 
+import static javafx.scene.paint.Color.RED;
+
 public class Ship {
     private String name;
     private Rectangle body;
-    private Rectangle hitBox;
+    private Rectangle placingHitBox;
+    private Rectangle shootingHitBox;
     private String position;
     private int length;
     private String direction;
@@ -14,10 +17,12 @@ public class Ship {
 
     Ship(String name, int length, Paint fill) {
         this.length = length;
-        body = new Rectangle(length * 50, 48, fill);
-        body.relocate(50, 51);
-        hitBox = new Rectangle(body.getWidth() + 50, body.getHeight() + 50);
-        hitBox.relocate(25, 25);
+        body = new Rectangle(length * 50, 50, fill);
+        body.relocate(50, 50);
+        placingHitBox = new Rectangle(body.getWidth() + 50, body.getHeight() + 50, RED);
+        placingHitBox.relocate(25, 25);
+        shootingHitBox = new Rectangle(body.getWidth() -25, body.getHeight()-25, RED);
+        shootingHitBox.relocate(62.5, 62.5);
         isPlaced = false;
         isDestroyed = false;
         this.direction = "horizontal";
@@ -69,16 +74,18 @@ public class Ship {
         }
     }
 
-    //change the direction of the boat and hitBox from horizontal to vertical and vice versa
+    //change the direction of the boat and placingHitBox from horizontal to vertical and vice versa
     void changeDirection() {
         if (this.direction.equals("horizontal")) {
             this.direction = "vertical";
             getShip().setRotate(90);
-            hitBox.setRotate(90);
+            placingHitBox.setRotate(90);
+            shootingHitBox.setRotate(90);
         } else if (this.direction.equals("vertical")) {
             this.direction = "horizontal";
             getShip().setRotate(0);
-            hitBox.setRotate(0);
+            placingHitBox.setRotate(0);
+            shootingHitBox.setRotate(0);
         }
 
     }
@@ -140,10 +147,15 @@ public class Ship {
         return between(tileX, startX, endX) && between(tileY, startyY, endY);
     }
 
-    //places the hitBox under the boat
-    void placeHitBox() {
-        hitBox.setX(getShip().getX());
-        hitBox.setY(getShip().getY());
+    //places the placingHitBox under the boat
+    void placePlacingHitBox() {
+        placingHitBox.setX(getShip().getX());
+        placingHitBox.setY(getShip().getY());
+    }
+
+    void placeShootingHitBox(){
+        shootingHitBox.setX(getShip().getX());
+        shootingHitBox.setY(getShip().getY());
     }
 
     Rectangle getShip() {
@@ -154,9 +166,11 @@ public class Ship {
         return name;
     }
 
-    Rectangle getHitBox() {
-        return hitBox;
+    Rectangle getPlacingHitBox() {
+        return placingHitBox;
     }
+
+    Rectangle getShootingHitBox() { return shootingHitBox; }
 
     boolean isPlaced() {
         return isPlaced;
