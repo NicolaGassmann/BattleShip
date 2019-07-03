@@ -1,6 +1,7 @@
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
@@ -8,6 +9,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 
 public class StartMenu {
+
+    private CheckBox longfield = new CheckBox("long field");
 
     public Scene getStartScreen() {
         MainScreen mainScreen = new MainScreen();
@@ -30,9 +33,9 @@ public class StartMenu {
         logo.setFitHeight(150);
         Button start = new Button("Start");
         start.setOnAction(event -> {
-            NavController.setScene(mainScreen.getPlacingScreen(false));
+            NavController.setScene(mainScreen.getPlacingScreen(longfield.isSelected()));
             Sound.stopMusic();
-            Sound.playMusic("Tetris_AIO.mp3");
+            Sound.playMusic("Tetris_Classic.mp3");
         });
 
         Button settings = new Button("Options");
@@ -63,11 +66,10 @@ public class StartMenu {
         back.setOnAction(event -> NavController.setScene(getStartScreen()));
         back.setMinSize(120, 50);
 
-
         VBox vbox = new VBox();
         vbox.setSpacing(50);
         vbox.setAlignment(Pos.CENTER);
-        vbox.getChildren().addAll(back);
+        vbox.getChildren().addAll(longfield, back);
 
         root.setCenter(vbox);
 

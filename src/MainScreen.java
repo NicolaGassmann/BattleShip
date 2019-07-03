@@ -14,15 +14,13 @@ import static javafx.scene.paint.Color.RED;
 
 public class MainScreen {
     private int fieldLength;
-    private int maxSameShips;
     private int minShips = 1;
-    private Stage stage;
-    private boolean longField;
 
     public MainScreen(){}
 
     //returns the ship placing screen
     Scene getPlacingScreen(boolean longField) {
+        int maxSameShips;
         if (!longField) {
             fieldLength = 10;
             maxSameShips = 2;

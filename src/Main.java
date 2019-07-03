@@ -17,6 +17,7 @@ public class Main extends Application {
         Sound.playMusic("Great_Fairy_Fountain.mp3");
         NavController.setScene(startScreen);
         NavController.getStage().setResizable(false);
+        NavController.getStage().setFullScreen(true);
         NavController.getStage().show();
     }
 }

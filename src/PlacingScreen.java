@@ -24,16 +24,15 @@ class PlacingScreen {
     public List<Ship> playerShips = new ArrayList<>();
     private List<Ship> aiShips = new ArrayList<>();
     private List<Tile> tiles = new ArrayList<>();
-    private int placeCounter = 0;
     private int twoCounter = 0;
     private int threeCounter = 0;
     private int fourCounter = 0;
     private int fiveCounter = 0;
-    private int currentCounter = 0;
     private int maxSameShips;
     private int fieldLength;
     private Group root;
-    private boolean errorInplacing = false;
+    private boolean errorInPlacing = false;
+    private Button cancel = new Button("cancel");
 
     public PlacingScreen(Group root, int fieldLength, int maxSameShips) {
         this.fieldLength = fieldLength;
@@ -74,6 +73,7 @@ class PlacingScreen {
                         if (!checkIfPlaceTaken(selectedShip.getShip(), playerShips)) {
                             selectedShip.setPlaced();
                             selectedShip.setPosition();
+                            cancel.setDisable(true);
                         }
                     }
                 }
@@ -147,11 +147,10 @@ class PlacingScreen {
             }
         });
 
-        Button cancel = new Button("cancel");
         cancel.setPrefWidth(255);
-        cancel.setDisable(false);
-        cancel.setOnAction(event->{
-            if(selectedShip != null && !selectedShip.isPlaced()) {
+        cancel.setDisable(true);
+        cancel.setOnAction(event -> {
+            if (selectedShip != null && !selectedShip.isPlaced()) {
                 deleteShip(selectedShip);
                 selectedShip.setPlaced();
                 cancel.setDisable(true);
@@ -174,6 +173,7 @@ class PlacingScreen {
                     }
                 } else {
                     //sets currentCounter to the amount of playerShips of the selected type
+                    int currentCounter = 0;
                     switch (intBoatLength) {
                         case 2:
                             currentCounter = twoCounter - 1;
@@ -190,7 +190,7 @@ class PlacingScreen {
                     }
                     boatLength.getChildren().remove(lengthWarning);
                     //checks if this is the first ship to be created
-                    if (shipCounter != 0) {
+                    if (twoCounter != 0 && threeCounter != 0 && fourCounter != 0 && fiveCounter != 0) {
                         //checks if the user tries to make more than the maximum of the same ship
                         if (currentCounter < maxSameShips) {
                             settings.getChildren().remove(maxSameShipsWarning);
@@ -203,20 +203,6 @@ class PlacingScreen {
                                 createAndPlaceAiShip(tfBoatName.getText(), intBoatLength, cpBoatColor.getValue());
                                 cancel.setDisable(false);
                                 //counts how many playerShips of each type there are
-                                switch (intBoatLength) {
-                                    case 2:
-                                        twoCounter++;
-                                        break;
-                                    case 3:
-                                        threeCounter++;
-                                        break;
-                                    case 4:
-                                        fourCounter++;
-                                        break;
-                                    case 5:
-                                        fiveCounter++;
-                                        break;
-                                }
                             } else {
                                 if (!settings.getChildren().contains(shipNotPlacedWarning)) {
                                     settings.getChildren().add(shipNotPlacedWarning);
@@ -232,20 +218,6 @@ class PlacingScreen {
                         createAndPlaceAiShip(tfBoatName.getText(), intBoatLength, cpBoatColor.getValue());
                         cancel.setDisable(false);
                         //counts how many playerShips of each type there are
-                        switch (intBoatLength) {
-                            case 2:
-                                twoCounter++;
-                                break;
-                            case 3:
-                                threeCounter++;
-                                break;
-                            case 4:
-                                fourCounter++;
-                                break;
-                            case 5:
-                                fiveCounter++;
-                                break;
-                        }
                     }
 
                 }
@@ -268,22 +240,22 @@ class PlacingScreen {
         generateShips.setOnAction(event -> {
             if (playerShips.isEmpty()) {
                 generateShips(cpBoatColor.getValue());
-                while(errorInplacing){
+                while (errorInPlacing) {
                     System.out.println("replace all ships");
                     generateShips(cpBoatColor.getValue());
                 }
             } else {
                 dialog.showAndWait().ifPresent(response -> {
-                    if(response == buttonTypeYes){
+                    if (response == buttonTypeYes) {
                         int count = playerShips.size();
-                        for(int i = 0; i < count; i++){
+                        for (int i = 0; i < count; i++) {
                             deleteShip(playerShips.get(0));
                         }
                         generateShips(cpBoatColor.getValue());
-                        while(errorInplacing){
+                        while (errorInPlacing) {
                             System.out.println("replace all ships");
                             int count1 = playerShips.size();
-                            for(int i = 0; i < count1; i++){
+                            for (int i = 0; i < count1; i++) {
                                 deleteShip(playerShips.get(0));
                             }
                             generateShips(cpBoatColor.getValue());
@@ -307,7 +279,7 @@ class PlacingScreen {
         //create ship with the same name, length and color as the users ship, but with isAI set true
         Ship ship = new Ship(name, length, paint);
         placeShip(ship, aiShips);
-        while(errorInplacing){
+        while (errorInPlacing) {
             System.out.println("replace ai ships");
             replaceAiShips();
         }
@@ -320,7 +292,7 @@ class PlacingScreen {
         root.getChildren().add(ship.getShip());
         ship.getShip().toBack();
         selectedShip = ship;
-        shipCounter++;
+        countShip(length);
     }
 
     //checks, if a thing touches a ship
@@ -353,6 +325,7 @@ class PlacingScreen {
         }
         //move the ship to the coordinates
         ship.moveShip(x, y, fieldLength * 50);
+        int placeCounter = 0;
         for (; checkIfPlaceTaken(ship.getShip(), ships); ) {
             //if the placing of the current failed more than 100000 times it replaces all ships
             if (placeCounter < 10000) {
@@ -371,13 +344,12 @@ class PlacingScreen {
                 break;
             }
         }
-        if(placeCounter >= 10000){
+        if (placeCounter >= 10000) {
             System.out.println("error");
-            errorInplacing = true;
-        }else{
-            errorInplacing = false;
+            errorInPlacing = true;
+        } else {
+            errorInPlacing = false;
         }
-        placeCounter = 0;
         ship.placeHitBox();
         ship.setPlaced();
         ship.setPosition();
@@ -423,16 +395,16 @@ class PlacingScreen {
     //deletes and recreates all ai ships in a different place
     public void replaceAiShips() {
         aiShips.clear();
-        for(int i = 0; i < twoCounter; i++){
+        for (int i = 0; i < twoCounter; i++) {
             createAndPlaceAiShip("", 2, BLACK);
         }
-        for(int i = 0; i < threeCounter; i++){
+        for (int i = 0; i < threeCounter; i++) {
             createAndPlaceAiShip("", 3, BLACK);
         }
-        for(int i = 0; i < fourCounter; i++){
+        for (int i = 0; i < fourCounter; i++) {
             createAndPlaceAiShip("", 4, BLACK);
         }
-        for(int i = 0; i < fiveCounter; i++){
+        for (int i = 0; i < fiveCounter; i++) {
             createAndPlaceAiShip("", 5, BLACK);
         }
     }
@@ -443,12 +415,37 @@ class PlacingScreen {
         root.getChildren().remove(ship.getShip());
         aiShips.remove(removingShip);
         playerShips.remove(ship);
-        switch(ship.getLength()){
-            case 2: twoCounter--;break;
-            case 3: threeCounter--;break;
-            case 4: fourCounter--;break;
-            case 5: fiveCounter--;break;
+        switch (ship.getLength()) {
+            case 2:
+                twoCounter--;
+                break;
+            case 3:
+                threeCounter--;
+                break;
+            case 4:
+                fourCounter--;
+                break;
+            case 5:
+                fiveCounter--;
+                break;
         }
         shipCounter--;
+    }
+
+    public void countShip(int length) {
+        switch (length) {
+            case 2:
+                twoCounter++;
+                break;
+            case 3:
+                threeCounter++;
+                break;
+            case 4:
+                fourCounter++;
+                break;
+            case 5:
+                fiveCounter++;
+                break;
+        }
     }
 }
