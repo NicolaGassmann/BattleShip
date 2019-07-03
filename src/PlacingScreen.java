@@ -374,15 +374,11 @@ class PlacingScreen {
         for (int i = 0; i < maxSameShips * 4; i++) {
             if (i < maxSameShips + 1) {
                 length = 2;
-                twoCounter++;
             } else if (i < maxSameShips * 2 + 1) {
                 length = 3;
-                threeCounter++;
             } else if (i < maxSameShips * 3 + 1) {
                 length = 4;
-                fourCounter++;
             } else {
-                fiveCounter++;
                 length = 5;
             }
             createShip(root, "", length, paint);
