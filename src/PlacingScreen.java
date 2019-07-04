@@ -4,9 +4,12 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
@@ -108,7 +111,6 @@ class PlacingScreen {
 
     //returns the settings where the player can customize his ships
     public void createShipSettings() {
-        settings = new VBox();
         VBox boatName = new VBox();
         VBox boatLength = new VBox();
         VBox boatColor = new VBox();
@@ -118,24 +120,24 @@ class PlacingScreen {
         lblBoatLength.setTextFill(WHITE);
         Label lblBoatColor = new Label("Boat Color:");
         lblBoatColor.setTextFill(WHITE);
-        Label emptyWarning = new Label("enter a boat length!");
+        Label emptyWarning = new Label("Enter a boat length!");
         emptyWarning.setTextFill(RED);
-        Label lengthWarning = new Label("length must be between 2 and 5!");
+        Label lengthWarning = new Label("Length must be between 2 and 5!");
         lengthWarning.setTextFill(RED);
-        Label maxShipsWarning = new Label("max amount of playerShips reached!");
+        Label maxShipsWarning = new Label("Max amount of playerShips reached!");
         maxShipsWarning.setTextFill(RED);
-        Label shipNotPlacedWarning = new Label("place the current ship first!");
+        Label shipNotPlacedWarning = new Label("Place the current ship first!");
         shipNotPlacedWarning.setTextFill(RED);
-        Label maxSameShipsWarning = new Label("you placed all of those ships, try another length!");
+        Label maxSameShipsWarning = new Label("You placed all of those ships, try another length!");
         maxSameShipsWarning.setTextFill(RED);
-        Label shipsAlreadyPlacedWarning = new Label("you already placed some ships!");
+        Label shipsAlreadyPlacedWarning = new Label("You already placed some ships!");
         shipsAlreadyPlacedWarning.setTextFill(RED);
         ColorPicker cpBoatColor = new ColorPicker(BLUE);
         cpBoatColor.setPrefWidth(255);
         TextField tfBoatName = new TextField();
-        tfBoatName.setMinWidth(255);
+        tfBoatName.setPrefWidth(255);
         TextField tfBoatLength = new TextField();
-        tfBoatLength.setMinWidth(255);
+        tfBoatLength.setPrefWidth(255);
         tfBoatLength.setText("3");
         //makes sure only numbers are in the boatLength field
         tfBoatLength.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -224,6 +226,7 @@ class PlacingScreen {
                 }
             }
         });
+
         ButtonType buttonTypeYes = new ButtonType("yes");
         ButtonType buttonTypeNo = new ButtonType("no");
         Dialog<ButtonType> dialog = new Dialog<>();
@@ -276,7 +279,7 @@ class PlacingScreen {
         //create ship with the same name, length and color as the users ship, but with isAI set true
         Ship ship = new Ship(name, length, RED);
         aiShips.add(ship);
-        ship.getShip().setVisible(true);
+        ship.getShip().setVisible(false);
         root.getChildren().add(ship.getShip());
         root.getChildren().add(ship.getPlacingHitBox());
         ship.getPlacingHitBox().setVisible(false);

@@ -115,16 +115,9 @@ public class BattleScreen {
     //shoots at a random tile in the battlefield
     private void randomShot() {
         //creates two random numbers between 0 and 9 which will be the shots coordinates
-        Random random = new Random();
-        int min = 0;
-        int max = fieldLength;
-        int x = random.nextInt(max - min) + min;
-        int y = random.nextInt(max - min) + min;
-        Position position = new Position(x, y);
+        Position position = getRandomPosition();
         while (shotPositions.contains(position)) {
-            x = random.nextInt(max - min) + min;
-            y = random.nextInt(max - min) + min;
-            position = new Position(x, y);
+            position = getRandomPosition();
         }
         shotPositions.add(position);
         for (Tile tile : tiles) {
@@ -179,7 +172,9 @@ public class BattleScreen {
     }
 
     private void shoot(Rectangle tile, Ship selectedShip, boolean player) {
+        Sound.playShot();
         if (selectedShip != null) {
+            Sound.playSound("Explosion.mp3");
             tile.setFill(rgb(255, 0, 0, 0.5));
             selectedShip.isHit();
             if (player) {
@@ -188,6 +183,7 @@ public class BattleScreen {
                 lastAiShotHit = true;
             }
             if (selectedShip.isDestroyed()) {
+                Sound.playSound("Destroyed.mp3");
                 if (player) {
                     Label destroyedShip = new Label("You destroyed your opponents ship" + selectedShip.getName() + "!");
                     destroyedShip.setTextFill(GREEN);
@@ -231,7 +227,7 @@ public class BattleScreen {
         }
     }
 
-    //makes a number from 1 to 26 in the equivalent letter, capitalist or not
+    //makes a number from 1 to 26 in the equivalent letter, in capitals or not
     private String numberToLetter(int number, boolean capitals) {
         String letter = "";
         if (capitals) {

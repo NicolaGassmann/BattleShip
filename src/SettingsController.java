@@ -1,6 +1,6 @@
 public class SettingsController {
     private static boolean longField = false;
-    private static int difficulty = 3;
+    private static int difficulty = 1;
 
     public static boolean isLongField() {
         return longField;

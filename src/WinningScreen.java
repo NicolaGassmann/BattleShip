@@ -41,10 +41,6 @@ public class WinningScreen {
             root.getStyleClass().add("deadPool");
             party();
             lblResult = new Label("YOU WIN!");
-            lblResult.setScaleX(5);
-            lblResult.setScaleY(5);
-            lblResult.relocate(NavController.getScene().getWidth()/2-lblResult.getWidth(), NavController.getScene().getHeight()/2-lblResult.getHeight());
-            root.getChildren().add(lblResult);
         }else{
             Sound.stopMusic();
             Sound.playMusic("Lost_Duel.mp3");
@@ -52,12 +48,14 @@ public class WinningScreen {
             ImageView background = new ImageView(image);
             root.getChildren().add(background);
             background.toBack();
-            lblResult = new Label("you lose");
-            lblResult.setScaleX(5);
-            lblResult.setScaleY(5);
-            lblResult.relocate(NavController.getScene().getWidth()/2-lblResult.getWidth(), NavController.getScene().getHeight()/2-lblResult.getHeight());
-            root.getChildren().add(lblResult);
+            lblResult = new Label("YOU LOSE");
         }
+        lblResult.setScaleX(5);
+        lblResult.setScaleY(5);
+        lblResult.setMinWidth(250);
+        lblResult.setAlignment(Pos.CENTER);
+        lblResult.relocate(NavController.getScene().getWidth()/2-125, NavController.getScene().getHeight()/2-lblResult.getHeight());
+        root.getChildren().add(lblResult);
 
         MainScreen mainScreen = new MainScreen();
         StartMenu startMenu = new StartMenu();
@@ -79,9 +77,13 @@ public class WinningScreen {
         });
         Button quit = new Button("Quit");
         quit.setOnAction(event -> NavController.getStage().close());
+        restart.setPrefWidth(120);
+        menu.setPrefWidth(120);
+        quit.setPrefWidth(120);
         buttons.getChildren().addAll(restart, menu, quit);
+        buttons.setSpacing(10);
         root.getChildren().add(buttons);
-        buttons.relocate(NavController.getScene().getWidth()/2-buttons.getWidth(), NavController.getScene().getHeight()/2+40);
+        buttons.relocate(NavController.getScene().getWidth()/2-60, NavController.getScene().getHeight()/2+40);
 
         return root;
     }
